@@ -1,13 +1,530 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدرسة الريادة الأهلية</title>
     <style>
-        body { background: #3498db; color: white; text-align: center; padding: 50px; }
-        h1 { font-size: 3em; }
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-left: 15px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+        
+        .school-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .school-slogan {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        /* Notification Bar */
+        .notification-bar {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .notification-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Main Navigation */
+        .main-nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .nav-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+            justify-content: center;
+        }
+        
+        .nav-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-button i {
+            margin-left: 8px;
+            font-size: 1.2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://source.unsplash.com/random/1600x900/?school');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .feature-card {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: right;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            display: block;
+            width: 50%;
+            height: 3px;
+            background-color: var(--secondary-color);
+            margin: 8px 0;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .school-name {
+                font-size: 1.5rem;
+            }
+            
+            .school-slogan {
+                font-size: 0.9rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-button {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
     </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>تجربة نجاح</h1>
-    <p>إذا رأيت هذه الصفحة زرقاء، فالتنسيقات تعمل!</p>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="https://via.placeholder.com/80" alt="شعار مدرسة الريادة الأهلية" class="logo">
+                <div>
+                    <h1 class="school-name">مدرسة الريادة الأهلية</h1>
+                    <p class="school-slogan">نحو مستقبل مشرق بقيادة واعية</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Notification Bar -->
+    <div class="notification-bar">
+        <div class="notification-content">
+            <p>غداً إجازة رسمية بمناسبة 26 سبتمبر</p>
+        </div>
+    </div>
+    
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="button-group">
+                <button class="nav-button" onclick="showSection('admin')">
+                    <i class="fas fa-user-tie"></i> الإدارة
+                </button>
+                <button class="nav-button" onclick="showSection('teachers')">
+                    <i class="fas fa-chalkboard-teacher"></i> المعلمين
+                </button>
+                <button class="nav-button" onclick="showSection('students')">
+                    <i class="fas fa-user-graduate"></i> الطلاب
+                </button>
+                <button class="nav-button" onclick="showSection('school')">
+                    <i class="fas fa-school"></i> المدرسة
+                </button>
+                <button class="nav-button" onclick="showSection('parents')">
+                    <i class="fas fa-users"></i> أولياء الأمور
+                </button>
+                <button class="nav-button" onclick="showSection('registration')">
+                    <i class="fas fa-file-signature"></i> التسجيل والتوظيف
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>مرحباً بكم في مدرسة الريادة الأهلية</h1>
+            <p>مؤسسة تعليمية رائدة تهدف إلى إعداد جيل مبدع وقيادي يمتلك المعرفة والقيم والمهارات اللازمة للمستقبل</p>
+            <button class="cta-button">تعرف علينا أكثر</button>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title">لماذا تختار مدرسة الريادة؟</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3 class="feature-title">جودة التعليم</h3>
+                <p>نقدم تعليماً متميزاً وفق أعلى المعايير العالمية مع التركيز على تنمية المهارات الفكرية والعملية</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="feature-title">كادر تعليمي متميز</h3>
+                <p>معلمون مؤهلون وذوو خبرة عالية في مجال التعليم والتربية</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3 class="feature-title">بنية تحتية متطورة</h3>
+                <p>فصول دراسية مجهزة بأحدث التقنيات التعليمية ومرافق متكاملة</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="#">الصفحة الرئيسية</a></li>
+                    <li><a href="#">عن المدرسة</a></li>
+                    <li><a href="#">الأخبار والفعاليات</a></li>
+                    <li><a href="#">الاتصال بنا</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>مواعيد العمل</h3>
+                <ul>
+                    <li>الأحد - الخميس</li>
+                    <li>7:30 صباحاً - 2:30 ظهراً</li>
+                    <li>الإدارة: 24 ساعة</li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>تواصل معنا</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> 0123456789</li>
+                    <li><i class="fas fa-envelope"></i> info@alreyada.edu</li>
+                    <li><i class="fas fa-map-marker-alt"></i> الرياض، المملكة العربية السعودية</li>
+                </ul>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>جميع الحقوق محفوظة &copy; 2023 مدرسة الريادة الأهلية</p>
+        </div>
+    </footer>
+    
+    <script>
+        // JavaScript for interactive elements
+        function showSection(sectionId) {
+            // This function will be used to show different sections when buttons are clicked
+            alert(`سيتم عرض قسم ${sectionId} - هذه مجرد عينة وسيتم تطويرها لاحقاً`);
+            // In a complete website, this would load different content dynamically
+        }
+        
+        // Notification bar animation
+        const notificationBar = document.querySelector('.notification-bar');
+        if (notificationBar) {
+            setInterval(() => {
+                notificationBar.style.backgroundColor = notificationBar.style.backgroundColor === 'var(--warning-color)' ? '#e67e22' : 'var(--warning-color)';
+            }, 2000);
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
-</html>
+    </html>
