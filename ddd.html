@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل دخول المدرسين | مدرسة الريادة</title>
+    <title>الصفحة الشخصية - مدرسة الريادة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-green: #2c5282;
-            --dark-green: #2c5282;
-            --light-green: #e0f2e9;
+            --primary-blue: #196ED9;
+            --dark-blue: #0d4a9e;
+            --light-blue: #2c82f0;
             --gold: #D4AF37;
-            --text-dark: #333;
-            --text-light: #666;
-            --mm: #196ED9;
+            --dark-bg: #0f172a;
+            --darker-bg: #0a0f1d;
+            --glass-bg: rgba(25, 110, 217, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-light: #e2e8f0;
+            --text-lighter: #f8fafc;
         }
         
         * {
@@ -24,229 +27,351 @@
         }
         
         body {
-            background-color: #f8f9fa;
-            background-image: linear-gradient(to bottom right, #1a202c, #1a365d);
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            color: var(--text-light);
             padding: 20px;
-            color: var(--text-dark);
+            position: relative;
+            overflow-x: hidden;
         }
         
-        /* زر الرجوع بالسهم */
-        .back-arrow {
+        /* تأثيرات الخلفية */
+        .bg-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .circle {
             position: absolute;
-            top: 25px;
-            left: 25px;
-            background-color: var(--primary-green);
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 10%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--light-blue), transparent);
+            opacity: 0.05;
+        }
+        
+        .circle:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: -300px;
+            right: -200px;
+        }
+        
+        .circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            left: -100px;
+        }
+        
+        .circle:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            top: 30%;
+            left: 20%;
+        }
+        
+        /* شريط الرأس */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .profile-info {
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            z-index: 100;
+            gap: 15px;
         }
         
-        .back-arrow:hover {
-            background-color: var(--dark-green);
-            transform: translateX(-5px) scale(1.05);
-        }
-        
-        .back-arrow i {
-            font-size: 20px;
-        }
-        
-        /* شعار المدرسة */
-        .school-header {
-            text-align: center;
-            margin: 40px 0 20px;
-            width: 100%;
-        }
-        
-        .school-logo {
-            width: 150px;
-            height: 150px;
+        .profile-pic {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            border: 4px solid var(--mm);
-            padding: 5px;
-            background: wite;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid var(--gold);
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
         
-        .school-title {
-            color: #196ED9 ;
-            font-size: 28px;
-            margin-top: 15px;
-            font-weight: 700;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        .profile-text h2 {
+            color: var(--text-lighter);
+            font-size: 22px;
+            margin-bottom: 5px;
         }
         
-        .school-subtitle {
-            color: var(--gold);
-            font-size: 18px;
-            margin-top: 5px;
-            font-weight: 600;
+        .profile-text p {
+            color: var(--light-blue);
+            font-weight: 500;
         }
         
-        /* تصميم تسجيل الدخول */
-        .login-card {
-            background: whte;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
-            margin: 20px 0 40px;
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* بطاقة الترحيب */
+        .welcome-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-        
         }
         
-        .login-card:before {
-            content: "";
+        .welcome-card::before {
+            content: '';
             position: absolute;
             top: 0;
             right: 0;
             width: 100%;
-            height: 5px;
-            background: #2c5282
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--primary-blue));
         }
         
-        .login-title {
-            text-align: center;
-            color: white;
-            font-size: 24px;
-            margin-bottom: 30px;
-            position: relative;
-            padding-bottom: 15px;
+        .welcome-card h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--text-lighter);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .login-title:after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--gold);
-            border-radius: 3px;
+        .welcome-card p {
+            line-height: 1.7;
+            max-width: 600px;
+            font-size: 17px;
         }
         
-        .input-group {
+        /* شبكة الأزرار - التصميم المطلوب */
+        .dashboard-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-row {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 25px;
+            gap: 25px;
         }
         
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark-green);
-            font-weight: 600;
-            font-size: 15px;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #e1e5eb;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: #f9fbfd;
-        }
-        
-        .password-input:focus {
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
-            outline: none;
-            background: white;
-        }
-        
-        .login-btn {
-            background: linear-gradient(to right, var(--primary-green), var(--dark-green));
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
+        .dashboard-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
             cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(6, 24, 97, 0.27);
-            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            min-height: 180px;
         }
         
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(6, 24, 97, 0.27);
+        .dashboard-btn:hover {
+            transform: translateY(-8px);
+            background: rgba(25, 110, 217, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
         
-        .login-btn:active {
-            transform: translateY(0);
+        .dashboard-btn i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--gold);
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(25, 110, 217, 0.4);
         }
         
-        .error-msg {
-            color: #e74c3c;
-            margin-top: 5px;
+        .dashboard-btn h3 {
+            font-size: 18px;
+            color: var(--text-lighter);
+            margin-bottom: 8px;
             text-align: center;
-            font-size: 15px;
-            font-weight: 700;
-            display: none;
-            background: #fef2;
-            padding: 1px;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
         }
         
-        .password-hint {
-            text-align: center;
-            color: var(--text-light);
+        .dashboard-btn p {
             font-size: 14px;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px dashed #e1e5eb;
+            opacity: 0.8;
+            text-align: center;
         }
         
-
+        /* تذييل الصفحة */
+        .footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 30px;
+        }
         
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 30px 20px;
+        /* تأثيرات الزجاج */
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* أنيميشن للأزرار */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .dashboard-btn:hover i {
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .dashboard-row {
+                flex-direction: column;
             }
             
-            .school-logo {
-                width: 120px;
-                height: 120px;
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
             }
             
-            .school-title {
+            .profile-info {
+                flex-direction: column;
+            }
+            
+            .welcome-card h1 {
                 font-size: 24px;
-            }
-            
-            .login-title {
-                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- زر الرجوع بالسهم -->
-    <a href="index.html" class="back-arrow">
-        <i class="fas fa-arrow-left"></i>
-    </a>
-    
-    <!-- شعار المدرسة -->
-    <div class="school-header">
-        <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="شعار مدرسة الريادة" class="school-logo">
-        <h1 class="school-title">مرحباً بك</h1>
-        <p class="school-subtitle">عبدالرحمن عادل الشوكي</p>
+    <!-- تأثيرات الدوائر في الخلفية -->
+    <div class="bg-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
     </div>
+    
+    <!-- شريط الرأس -->
+    <div class="header">
+        <div class="profile-info">
+            <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="صورة المدرس" class="profile-pic">
+            <div class="profile-text">
+                <h2>أ/ دينا عادل الشوكي</h2>
+                <p>مدرسة الريادة - قسم الرياضيات</p>
+            </div>
+        </div>
+        
+        <button class="logout-btn glass-effect">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+    </div>
+    
+    <!-- بطاقة الترحيب -->
+    <div class="welcome-card glass-effect">
+        <h1><i class="fas fa-star"></i> مرحباً بك في نظام المدرسين</h1>
+        <p>نظام إدارة الفصول الدراسية والمهام التعليمية. يمكنك من خلال هذه الصفحة الوصول إلى جميع الأدوات والموارد التي تحتاجها لإدارة فصولك وتفاعل الطلاب وتتبع التقدم الأكاديمي.</p>
+    </div>
+    
+    <!-- شبكة الأزرار المطلوبة -->
+    <div class="dashboard-container">
+        <!-- الصف الأول: زرين جنب بعض -->
+        <div class="dashboard-row">
+            <div class="dashboard-btn glass-effect">
+                <i class="fas fa-book-open"></i>
+                <h3>المواد الدراسية</h3>
+                <p>إدارة محتوى المواد التعليمية والمناهج</p>
+            </div>
+            
+            <div class="dashboard-btn glass-effect">
+                <i class="fas fa-users"></i>
+                <h3>الفصول الدراسية</h3>
+                <p>إدارة الفصول والطلاب والحضور</p>
+            </div>
+        </div>
+        
+        <!-- الصف الثاني: زرين تحت الأولين -->
+        <div class="dashboard-row">
+            <div class="dashboard-btn glass-effect">
+                <i class="fas fa-tasks"></i>
+                <h3>الواجبات والتقييمات</h3>
+                <p>إنشاء الواجبات وتقييم أداء الطلاب</p>
+            </div>
+            
+            <div class="dashboard-btn glass-effect">
+                <i class="fas fa-chart-line"></i>
+                <h3>التقارير والإحصائيات</h3>
+                <p>تتبع تقدم الطلاب وإعداد التقارير</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- تذييل الصفحة -->
+    <div class="footer glass-effect">
+        <p>© 2023 نظام إدارة مدرسة الريادة. جميع الحقوق محفوظة.</p>
+        <p>الإصدار 2.1.5 | آخر تحديث: 15 أغسطس 2023</p>
+    </div>
+
+    <script>
+        // إضافة تأثيرات تفاعلية
+        document.querySelectorAll('.dashboard-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // تأثير الضغط
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // هنا يمكنك إضافة الانتقال إلى الصفحة المطلوبة
+                // window.location.href = "page.html";
+            });
+        });
+        
+        // تسجيل الخروج
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
 </body>
 </html>
