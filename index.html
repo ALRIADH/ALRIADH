@@ -60,9 +60,10 @@
         
         /* رأس الصفحة - تصميم زجاجي */
         .header {
-            background: var(--glass);
+           margin-top: 3.5rem;
+            background: /*var(--glass)*/;
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: /*1px solid var(--glass-border)*/;
             color: white;
             padding: 0.6rem 0;
             text-align: center;
@@ -71,13 +72,11 @@
         }
         
         .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 0 10px;
-        }
+    display: flex;
+    flex-direction: column; /* يخلي الصورة فوق والنص تحت */
+    align-items: center;     /* يوسّطهم في النص */
+    text-align: center;      /* يوسّط النص نفسه */
+}
         
         .logo {
             width: 50px;
@@ -116,6 +115,7 @@
         }
         
         .school-name {
+           margin-top: 0.5rem;
             font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 0.1rem;
@@ -189,7 +189,7 @@
             color: white;
             border: 1px solid var(--glass-border);
             padding: 18px 12px;
-            border-radius: 12px;
+            border-radius: 7px;
             font-weight: 600;
             font-size: 0.95rem;
             display: flex;
@@ -312,8 +312,8 @@
             }
             
             .logo {
-                width: 60px;
-                height: 60px;
+                width: 90px;
+                height: 90px;
             }
             
             .school-name {
@@ -379,7 +379,7 @@
     </header>
     
     <!-- شريط التنبيهات -->
-    <div class="notification-bar">
+    <!--div class="notification-bar">
         <div class="container">
             <div class="notification-content">
                 <i class="fas fa-bell"></i>
