@@ -60,11 +60,11 @@
             top: 25px;
             left: 25px;
             background: var(--glass);
-            backdrop-filter: blur(10px);
+            bakdrop-filter: blur(10px);
             color: white;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            border-radius: 10%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,9 +75,8 @@
             border: 1px solid var(--glass-border);
         }
         
-        .back-arrow:hover {
-            transform: translateX(-5px) scale(1.05);
-            background: var(--glass-hover);
+        .back-arrow:hover{
+            transform: translateX(-3px) scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         }
         
@@ -85,26 +84,26 @@
             font-size: 20px;
         }
         
-        /* شعار المدرسة - تصميم زجاجي */
-        .school-header {
-            text-align: center;
-            margin: 20px 0 30px;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-        }
+       .school-logo {
+    display: flex;
+    flex-direction: column; /* يخلي الصورة فوق والنص تحت */
+    align-items: center;     /* يوسّطهم في النص */
+    text-align: center;      /* يوسّط النص نفسه */
+}
         
         .school-logo {
-            width: 120px;
-            height: 120px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.3);
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 5px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-            position: relative;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
         }
         
         .school-logo::after {
@@ -121,20 +120,19 @@
         }
         
         .school-logo img {
-            width: 100%;
-            height: 100%;
+            width: 90%;
+            height: 90%;
             object-fit: cover;
             border-radius: 50%;
             background: var(--primary);
         }
         
         .school-title {
-            color: var(--text-light);
-            font-size: 28px;
-            margin-top: 15px;
+            font-size: 1.3rem;
             font-weight: 700;
+            margin-bottom: 0.1rem;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(to right, var(--light), #a0aec0);
+            background: linear-gradient(to right, #e2e8f0, #a0aec0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -199,7 +197,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: var(--gold);
+            background: var(--secondary);
             border-radius: 3px;
         }
         
@@ -244,7 +242,7 @@
             color: white;
             border: none;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 18px;
             font-weight: 600;
@@ -288,10 +286,10 @@
             background: rgba(231, 76, 60, 0.3);
             margin-top: 15px;
             text-align: center;
-            font-size: 15px;
+            font-size: 11px;
             font-weight: 600;
             display: none;
-            padding: 12px;
+            padding: 1px;
             border-radius: 10px;
             border-left: 4px solid var(--accent);
             backdrop-filter: blur(5px);
@@ -301,9 +299,10 @@
         .password-hint {
             text-align: center;
             color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+            font-size: 10px;
             margin-top: 25px;
             padding-top: 15px;
+            
             border-top: 1px dashed var(--glass-border);
         }
         
@@ -325,7 +324,7 @@
             }
             
             .school-title {
-                font-size: 24px;
+                font-size: 1.1em;
             }
             
             .login-card {
@@ -338,10 +337,10 @@
             }
             
             .back-arrow {
-                top: 15px;
-                left: 15px;
-                width: 40px;
-                height: 40px;
+                top: 25px;
+                left: 27px;
+                width: 46px;
+                height: 45px;
             }
         }
     </style>
@@ -349,18 +348,7 @@
 <body>
     <!-- زر الرجوع بالسهم -->
     <a href="index.html" class="back-arrow">
-        <i class="fas fa-arrow-left"></i>
-    </a>
-    
-    <!-- شعار المدرسة -->
-    <div class="school-header">
-        <div class="school-logo">
-            <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="شعار مدرسة الريادة">
-        </div>
-        <h1 class="school-title">مدرسة الريادة</h1>
-        <p class="school-subtitle">نحو مستقبل تعليمي متميز</p>
-    </div>
-    
+        <i class="fas fa-arrow-left"></i> </a>
     <!-- بطاقة تسجيل الدخول -->
     <div class="login-card">
         <h2 class="login-title">تسجيل دخول المدرسين</h2>
@@ -371,24 +359,27 @@
         </div>
         
         <button class="login-btn" onclick="checkPassword()">
-            <i class="fas fa-lock"></i> دخول إلى النظام
+            <i /**class="fas fa-lock"**/></i> دخول  
         </button>
         
         <p class="error-msg" id="errorMsg">
             <i class="fas fa-exclamation-circle"></i> كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى
+        </p>
+          <p class="password-hint">
+            كل مدرس لدية كلمة مرور خاصة للوصول إلى صفحته الشخصية
         </p>
     </div>
     
     <script>
         // كلمات المرور لكل مدرس
         const teacherPasswords = {
-            "123456": "ggg.html",
+            "12345": "ggg.html",
             "teacher1": "ivvv2.html",
             "riyada2023": "ivvv3.html",
             "password4": "ivvv4.html",
             "edu5678": "ivvv5.html",
             "school123": "ivvv6.html",
-            "teach789": "ui.html",
+            "xxx": "ui.html",
             "7768": "ddd.html"
         };
         
