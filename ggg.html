@@ -3,250 +3,607 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل دخول المدرسين | مدرسة الريادة</title>
+    <title>مدرسة الريادة الأهلية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-green: #2c5282;
-            --dark-green: #2c5282;
-            --light-green: #e0f2e9;
-            --gold: #D4AF37;
-            --text-dark: #333;
-            --text-light: #666;
-            --mm: #196ED9;
-        }
-        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #e53e3e;
+            --gold: #d69e2e;
+            --light: #f7fafc;
+            --dark: #1a202c;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --icon-size: 2.2rem; /* حجم أيقونات أكبر قليلاً */
         }
         
         body {
-            background-color: #f8f9fa;
-            background-image: linear-gradient(to bottom right, #1a202c, #1a365d);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #e2e8f0;
+            line-height: 1.7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: var(--text-dark);
+            background-attachment: fixed;
+            overflow-x: hidden;
         }
         
-        /* زر الرجوع بالسهم */
-        .back-arrow {
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(45, 85, 155, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(230, 62, 62, 0.1) 0%, transparent 40%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* رأس الصفحة - تصميم زجاجي */
+        .header {
+            background: /*var(--glass)*/;
+            backdrop-filter: blur(10px);
+            border-bottom:/* 1px solid var(--glass-border)*/;
+            color: white;
+            padding: 0.6rem 0;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo-container {
+    display: flex;
+    flex-direction: column; /* يخلي الصورة فوق والنص تحت */
+    align-items: center;     /* يوسّطهم في النص */
+    text-align: center;      /* يوسّط النص نفسه */
+}
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold), var(--accent));
+            border-radius: 20%;
+            z-index: -1;
+            animation: rotate 30s linear infinite;
+        }
+        
+        .logo img {
+            width: 90%;
+            height: 90%;
+            object-fit: cover;
+            border-radius: 15%;
+            background: var(--primary);
+        }
+        
+        .school-name {
+            margin-top: 1.0rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #fff, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .school-slogan {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+        
+        /* شريط التنبيهات - تصميم مميز */
+        .notification-bar {
+            background: linear-gradient(90deg, var(--accent), #c53030);
+            color: white;
+            padding: 1px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            animation: shine 3s infinite;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* أزرار التنقل - تصميم فخم مع 3 أزرار في الصف دائماً */
+        .main-nav {
+            padding: 0rem 0rem;
+            flex: 0.3;
+            display: flex;
+            align-items: center;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav-button {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid var(--glass-border);
+            padding: 18px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            min-height: 110px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(44, 82, 130, 0.7), rgba(230, 62, 62, 0.5));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+            background: var(--glass-hover);
+        }
+        
+        .nav-button:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-button i {
+            font-size: var(--icon-size);
+            margin-bottom: 12px;
+            background: linear-gradient(to bottom, #e2e8f0, #a0aec0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.4s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 50px; /* ارتفاع ثابت للأيقونة */
+        }
+        
+        .nav-button:hover i {
+            transform: scale(1.2);
+        }
+        
+        .nav-button span {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        
+        /* تذييل الصفحة - تصميم زجاجي */
+        .mini-footer {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--glass-border);
+            color: #cbd5e0;
+            padding: 1rem 0;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+        
+        /* أنيميشن */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+        
+        /* تصميم متجاوب مع 3 أزرار في الصف دائماً */
+        /* هنا يتم تحديد حجم الأيقونات */
+        /* حجم للأجهزة المتوسطة */
+        @media (max-width: 768px) {
+            :root {
+                --icon-size: 2.5rem;
+                
+            }
+            
+            .buttons-grid {
+                gap: 12px;
+            }
+            
+            .nav-button {
+                padding: 16px 10px;
+                min-height: 105px;
+            }
+            
+            .nav-button i {
+                height: 45px;
+            }
+            
+            .nav-button span {
+                font-size: 0.9rem;
+            }
+        }
+         /* حجم للهواتف */
+        @media (max-width: 480px) {
+            :root {
+                --icon-size: 2.5rem;
+            }
+            
+        .header {
+    padding: 1.5rem 0;
+}
+
+.logo {
+    margin-top: 3.5rem;
+}
+
+.logo img {
+    width: 140px; /* فقط إذا تحتاج تضبط الحجم */
+    height: auto;
+}
+            
+            .logo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .school-name {
+                font-size: 1.50rem;
+            }
+            
+            .buttons-grid {
+                gap: 8px;
+            }
+            
+            .nav-button {
+                padding: 14px 8px;
+                min-height: 95px;
+            }
+            
+            .nav-button i {
+                height: 100px;
+            }
+            
+            .nav-button span {
+                font-size: 0.85rem;
+            }
+        }
+        /* حجم للهواتف الصغيرة */
+        @media (max-width: 360px) {
+            :root {
+                --icon-size: 1.5rem;
+            }
+            
+            .buttons-grid {
+                gap: 6px;
+            }
+            
+            .nav-button {
+                padding: 12px 6px;
+                min-height: 85px;
+            }
+            
+            .nav-button i {
+                height: 35px;
+            }
+            
+            .nav-button span {
+                font-size: 0.8rem;
+            }
+        }
+        /* زر الخروج في أعلى اليسار */
+        .logout-arrow {
             position: absolute;
             top: 25px;
             left: 25px;
-            background-color: var(--primary-green);
+            background: var(--glass);
+            bakdrop-filter: blur(10px);
             color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 10%;
+            width: 46px;
+            height: 46px;
+            border-radius: 30%;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             z-index: 100;
+            border: 1px solid var(--glass-border);
         }
         
-        .back-arrow:hover {
-            background-color: var(--dark-green);
-            transform: translateX(-5px) scale(1.05);
+        .logout-arrow:hover {
+            transform: translateX(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         }
         
-        .back-arrow i {
+        .logout-arrow i {
             font-size: 20px;
         }
-        
-        /* شعار المدرسة */
-        .school-header {
-            text-align: center;
-            margin: 40px 0 20px;
-            width: 100%;
-        }
-        
-        .school-logo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--mm);
-            padding: 5px;
-            background: wite;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .school-title {
-            color: #196ED9 ;
-            font-size: 28px;
-            margin-top: 15px;
-            font-weight: 700;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .school-subtitle {
-            color: var(--gold);
-            font-size: 18px;
-            margin-top: 5px;
-            font-weight: 600;
-        }
-        
-        /* تصميم تسجيل الدخول */
-        .login-card {
-            background: whte;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
-            margin: 20px 0 40px;
-            position: relative;
-            overflow: hidden;
-        
-        }
-        
-        .login-card:before {
-            content: "";
-            position: absolute;
+                /* قائمة تأكيد الخروج */
+        .confirmation-menu {
+            position: fixed;
             top: 0;
-            right: 0;
+            left: 0;
             width: 100%;
-            height: 5px;
-            background: #2c5282
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
         
-        .login-title {
+        .confirmation-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .confirmation-box {
+            background: linear-gradient(135deg, #1a202c, #0f172a);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 380px;
+            padding: 30px;
             text-align: center;
-            color: white;
-            font-size: 24px;
-            margin-bottom: 30px;
-            position: relative;
-            padding-bottom: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
         }
         
-        .login-title:after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--gold);
-            border-radius: 3px;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark-green);
-            font-weight: 600;
-            font-size: 15px;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #e1e5eb;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: #f9fbfd;
-        }
-        
-        .password-input:focus {
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
-            outline: none;
-            background: white;
-        }
-        
-        .login-btn {
-            background: linear-gradient(to right, var(--primary-green), var(--dark-green));
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(6, 24, 97, 0.27);
-            letter-spacing: 0.5px;
-        }
-        
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(6, 24, 97, 0.27);
-        }
-        
-        .login-btn:active {
+        .confirmation-menu.active .confirmation-box {
             transform: translateY(0);
         }
         
-        .error-msg {
-            color: #e74c3c;
-            margin-top: 5px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 700;
-            display: none;
-            background: #fef2;
-            padding: 1px;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
+        .confirmation-box i {
+            font-size: 50px;
+            color: var(--gold);
+            margin-bottom: 20px;
         }
         
-        .password-hint {
-            text-align: center;
-            color: var(--text-light);
-            font-size: 14px;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px dashed #e1e5eb;
+        .confirmation-box h2 {
+            color: var(--light);
+            margin-bottom: 20px;
+            font-size: 24px;
         }
         
-
+        .confirmation-box p {
+            color: var(--light);
+            margin-bottom: 25px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
         
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 30px 20px;
-            }
-            
-            .school-logo {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .school-title {
-                font-size: 24px;
-            }
-            
-            .login-title {
-                font-size: 22px;
-            }
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .confirmation-btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+           .btn-yes {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .btn-no {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .confirmation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* أنيميشن */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- زر الرجوع بالسهم -->
-    <a href="index.html" class="back-arrow">
+  <div class="logout-arrow" id="logoutArrow">
         <i class="fas fa-arrow-left"></i>
-    </a>
-    
-    <!-- شعار المدرسة -->
-    <div class="school-header">
-        <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="شعار مدرسة الريادة" class="school-logo">
-        <h1 class="school-title">مرحباً بك</h1>
-        <p class="school-subtitle">أ/ دينا عادل الشوكي</p>
     </div>
+    <!-- رأس الصفحة -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/8kMP0Dbj/image.jpg" alt="شعار مدرسة الريادة الأهلية">
+                </div>
+                <div>
+                    <h1 class="school-name">أ/ يسرى الريمي</h1>
+                    <p class="school-slogan">مدرس الريادة - مادة الأحياء</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- شريط التنبيهات -->
+    <!--div class="notification-bar">
+        <div class="container">
+            <div class="notification-content">
+                <i class="fas fa-bell"></i>
+                <p>غداً إجازة رسمية بمناسبة 26 سبتمبر</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- أزرار التنقل - 3 في الصف دائماً -->
+    <section class="main-nav">
+        <div class="container">
+            <div class="buttons-grid">
+                <a href="admin.html" class="nav-button">
+                    <i class="fas fa-bell"></i>
+                    <span>الأشعارات</span>
+                </a>
+                <a href="ccc.html" class="nav-button">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>المعلمين</span>
+                </a>
+                <a href="students.html" class="nav-button">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>الطلاب</span>
+                </a>
+                <a href="about.html" class="nav-button">
+                    <i class="fas fa-school"></i>
+                    <span>حول المدرسة</span>
+                </a>
+                <a href="parents.html" class="nav-button">
+                    <i class="fas fa-users"></i>
+                    <span>أولياء الأمور</span>
+                </a>
+                <a href="registration.html" class="nav-button">
+                    <i class="fas fa-file-signature"></i>
+                    <span>التسجيل والتوظيف</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- تذييل صغير -->
+
+     
+    <!-- قائمة تأكيد الخروج -->
+    <div class="confirmation-menu" id="confirmationMenu">
+        <div class="confirmation-box">
+            <!--i class="fas fa-question-circle"></i-->
+            <h2>تأكيد الخروج</h2>
+            <p>هل أنت متأكد أنك تريد الخروج؟</p>
+            <div class="confirmation-buttons">
+                <button class="confirmation-btn btn-yes" id="logoutYes">نعم، الخروج</button>
+                <button class="confirmation-btn btn-no" id="logoutNo">لا، البقاء</button>
+            </div>
+        </div>
+    </div>
+   <script>
+        // التحكم في قائمة تأكيد الخروج
+        const logoutArrow = document.getElementById('logoutArrow');
+        const confirmationMenu = document.getElementById('confirmationMenu');
+        const logoutYes = document.getElementById('logoutYes');
+        const logoutNo = document.getElementById('logoutNo');
+        
+        logoutArrow.addEventListener('click', function() {
+            confirmationMenu.classList.add('active');
+        });
+        
+        logoutNo.addEventListener('click', function() {
+            confirmationMenu.classList.remove('active');
+        });
+        
+        logoutYes.addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        // إغلاق القائمة عند النقر خارجها
+        confirmationMenu.addEventListener('click', function(e) {
+            if (e.target === confirmationMenu) {
+                confirmationMenu.classList.remove('active');
+            }
+        });
+        // تأثيرات بسيطة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثير ظهور الأزرار تدريجياً
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.style.opacity = '1';
+                    button.style.transform = 'translateY(0)';
+                }, 150 * index);
+            });
+        });
+    </script>
 </body>
 </html>
