@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المدرسين | مدرسة الريادة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #2c5282;
+            --dark-green: #2c5282;
+            --light-green: #e0f2e9;
+            --gold: #D4AF37;
+            --text-dark: #333;
+            --text-light: #666;
+            --mm: #196ED9;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            background-image: linear-gradient(to bottom right, #1a202c, #1a365d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+        
+        /* زر الرجوع بالسهم */
+        .back-arrow {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background-color: var(--primary-green);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .back-arrow:hover {
+            background-color: var(--dark-green);
+            transform: translateX(-5px) scale(1.05);
+        }
+        
+        .back-arrow i {
+            font-size: 20px;
+        }
+        
+        /* شعار المدرسة */
+        .school-header {
+            text-align: center;
+            margin: 40px 0 20px;
+            width: 100%;
+        }
+        
+        .school-logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--mm);
+            padding: 5px;
+            background: wite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .school-title {
+            color: #196ED9 ;
+            font-size: 28px;
+            margin-top: 15px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .school-subtitle {
+            color: var(--gold);
+            font-size: 18px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        
+        /* تصميم تسجيل الدخول */
+        .login-card {
+            background: whte;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            margin: 20px 0 40px;
+            position: relative;
+            overflow: hidden;
+        
+        }
+        
+        .login-card:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: #2c5282
+        }
+        
+        .login-title {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .login-title:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-green);
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e1e5eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f9fbfd;
+        }
+        
+        .password-input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+            outline: none;
+            background: white;
+        }
+        
+        .login-btn {
+            background: linear-gradient(to right, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(6, 24, 97, 0.27);
+            letter-spacing: 0.5px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(6, 24, 97, 0.27);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-msg {
+            color: #e74c3c;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            display: none;
+            background: #fef2;
+            padding: 1px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .password-hint {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #e1e5eb;
+        }
+        
+
+        
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .school-logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .school-title {
+                font-size: 24px;
+            }
+            
+            .login-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- زر الرجوع بالسهم -->
+    <a href="index.html" class="back-arrow">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <!-- شعار المدرسة -->
+    <div class="school-header">
+        <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="شعار مدرسة الريادة" class="school-logo">
+        <h1 class="school-title">مرحباً بك</h1>
+        <p class="school-subtitle">أ/ دينا عادل الشوكي</p>
+    </div>
+</body>
+</html>
