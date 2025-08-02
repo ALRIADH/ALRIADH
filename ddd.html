@@ -60,9 +60,9 @@
         
         /* رأس الصفحة - تصميم زجاجي */
         .header {
-            background: var(--glass);
+            background: /*var(--glass)*/;
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom:/* 1px solid var(--glass-border)*/;
             color: white;
             padding: 0.6rem 0;
             text-align: center;
@@ -95,21 +95,21 @@
         .logo::after {
             content: '';
             position: absolute;
-            top: -2px;
+            top: -5px;
             left: -2px;
             right: -2px;
             bottom: -2px;
             background: linear-gradient(45deg, var(--gold), var(--accent));
-            border-radius: 10%;
+            border-radius: 20%;
             z-index: -1;
-            animation: rotate 90s linear infinite;
+            animation: rotate 30s linear infinite;
         }
         
         .logo img {
             width: 90%;
             height: 90%;
             object-fit: cover;
-            border-radius: 10%;
+            border-radius: 15%;
             background: var(--primary);
         }
         
@@ -135,7 +135,7 @@
         .notification-bar {
             background: linear-gradient(90deg, var(--accent), #c53030);
             color: white;
-            padding: 8px 0;
+            padding: 1px 0;
             text-align: center;
             font-weight: 600;
             font-size: 0.9rem;
@@ -167,8 +167,8 @@
         
         /* أزرار التنقل - تصميم فخم مع 3 أزرار في الصف دائماً */
         .main-nav {
-            padding: 0.8rem 0 2rem;
-            flex: 1;
+            padding: 0rem 0rem;
+            flex: 0.3;
             display: flex;
             align-items: center;
         }
@@ -188,7 +188,7 @@
             color: white;
             border: 1px solid var(--glass-border);
             padding: 18px 12px;
-            border-radius: 12px;
+            border-radius: 5px;
             font-weight: 600;
             font-size: 0.95rem;
             display: flex;
@@ -371,13 +371,14 @@
         /* زر الخروج في أعلى اليسار */
         .logout-arrow {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            top: 25px;
+            left: 25px;
+            background: var(--glass);
+            bakdrop-filter: blur(10px);
             color: white;
             width: 46px;
             height: 46px;
-            border-radius: 10%;
+            border-radius: 30%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -385,7 +386,7 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             z-index: 100;
-            cursor: pointer;
+            border: 1px solid var(--glass-border);
         }
         
         .logout-arrow:hover {
@@ -493,7 +494,7 @@
 </head>
 <body>
   <div class="logout-arrow" id="logoutArrow">
-        <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-arrow-left"></i>
     </div>
     <!-- رأس الصفحة -->
     <header class="header">
@@ -525,8 +526,8 @@
         <div class="container">
             <div class="buttons-grid">
                 <a href="admin.html" class="nav-button">
-                    <i class="fas fa-user-tie"></i>
-                    <span>الإدارة</span>
+                    <i class="fas fa-bell"></i>
+                    <span>الأشعارات</span>
                 </a>
                 <a href="ccc.html" class="nav-button">
                     <i class="fas fa-chalkboard-teacher"></i>
@@ -553,18 +554,14 @@
     </section>
     
     <!-- تذييل صغير -->
-    <footer class="mini-footer">
-        <div class="container">
-            <p>جميع الحقوق محفوظة &copy; 2025 مدرسة الريادة الأهلية</p>
-        </div>
-    </footer>
+
      
     <!-- قائمة تأكيد الخروج -->
     <div class="confirmation-menu" id="confirmationMenu">
         <div class="confirmation-box">
-            <i class="fas fa-question-circle"></i>
+            <!--i class="fas fa-question-circle"></i-->
             <h2>تأكيد الخروج</h2>
-            <p>هل أنت متأكد أنك تريد الخروج من النظام؟</p>
+            <p>هل أنت متأكد أنك تريد الخروج؟</p>
             <div class="confirmation-buttons">
                 <button class="confirmation-btn btn-yes" id="logoutYes">نعم، الخروج</button>
                 <button class="confirmation-btn btn-no" id="logoutNo">لا، البقاء</button>
