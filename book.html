@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع تحميل الكتب الدراسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* زر الخروج */
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .exit-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* الهيدر */
+        .header {
+            text-align: center;
+            padding: 40px 0 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #e0e0e0;
+        }
+        
+        /* صفوف الكتب */
+        .books-row {
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        
+        .row-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+        
+        .books-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 25px;
+            padding: 15px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+        
+        .books-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .books-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        
+        /* بطاقة الكتاب */
+        .book-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            overflow: hidden;
+            min-width: 220px;
+            max-width: 220px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(45deg, #2c3e50, #4a6491);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .book-cover img {
+            width: 80%;
+            height: 90%;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* شريط التقدم */
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s ease;
+        }
+        
+        .progress-percentage {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        
+        .book-info {
+            padding: 20px 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .book-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .download-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #2980b9, #3498db);
+            transform: translateY(-2px);
+        }
+        
+        .download-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .download-btn.disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* تأثير التحميل */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            border-radius: 8px;
+            animation: loadingEffect 1.5s infinite;
+        }
+        
+        @keyframes loadingEffect {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading .download-text {
+            visibility: hidden;
+        }
+        
+        /* الفوتر */
+        .footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* رسالة التحميل */
+        .download-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .download-message.show {
+            opacity: 1;
+        }
+        
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .row-title {
+                font-size: 1.5rem;
+            }
+            
+            .book-card {
+                min-width: 180px;
+                max-width: 180px;
+            }
+            
+            .book-cover {
+                height: 230px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- زر الخروج -->
+    <button class="exit-btn" onclick="window.history.back()">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <!-- الهيدر -->
+    <div class="header">
+        <h1>مكتبة الكتب الدراسية</h1>
+        <p>تصفح وتحميل الكتب الدراسية لجميع الصفوف والمواد التعليمية</p>
+    </div>
+    
+    <!-- صفوف الكتب -->
+    <div class="books-row">
+        <h2 class="row-title">كتب الصف الأول الثانوي</h2>
+        <div class="books-container" id="grade1">
+            <!-- سيتم إضافة الكتب هنا بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <div class="books-row">
+        <h2 class="row-title">كتب الصف الثاني الثانوي</h2>
+        <div class="books-container" id="grade2">
+            <!-- سيتم إضافة الكتب هنا بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <div class="books-row">
+        <h2 class="row-title">كتب الصف الثالث الثانوي</h2>
+        <div class="books-container" id="grade3">
+            <!-- سيتم إضافة الكتب هنا بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- رسالة التحميل -->
+    <div class="download-message" id="downloadMessage">
+        جاري تحميل الكتاب...
+    </div>
+    
+    <!-- الفوتر -->
+    <div class="footer">
+        <p>جميع الحقوق محفوظة &copy; 2023 مكتبة الكتب الدراسية</p>
+    </div>
+
+    <script>
+        // بيانات الكتب
+        const subjects = [
+            "اللغة العربية", "الرياضيات", "الفيزياء", "الكيمياء", 
+            "الأحياء", "التاريخ", "الجغرافيا", "اللغة الإنجليزية",
+            "التربية الإسلامية", "علوم الحاسب", "الفلسفة", "علم النفس"
+        ];
+        
+        // روابط الصور والتحميل
+        const bookImage = "https://i.postimg.cc/3RpyGb6h/image.jpg";
+        const downloadLink = "https://drive.usercontent.google.com/u/0/uc?id=1g_Mr_WwCvsRSZDbHV40Ows6kZTkYilk_&export=download";
+        
+        // إنشاء بطاقات الكتب
+        function createBookCards() {
+            const containers = [
+                document.getElementById('grade1'),
+                document.getElementById('grade2'),
+                document.getElementById('grade3')
+            ];
+            
+            containers.forEach(container => {
+                for (let i = 0; i < 6; i++) {
+                    const subject = subjects[Math.floor(Math.random() * subjects.length)];
+                    
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.innerHTML = `
+                        <div class="book-cover">
+                            <img src="${bookImage}" alt="غلاف ${subject}">
+                            <div class="progress-container">
+                                <div class="progress-percentage">0%</div>
+                                <div class="progress-bar"></div>
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">${subject}</h3>
+                            <button class="download-btn" onclick="downloadBook(this)">
+                                <i class="fas fa-download"></i>
+                                <span class="download-text">تحميل الكتاب</span>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(bookCard);
+                }
+            });
+        }
+        
+        // محاكاة تحميل الكتاب مع شريط التقدم
+        function downloadBook(button) {
+            // الحصول على العناصر ذات الصلة
+            const bookCard = button.closest('.book-card');
+            const progressContainer = bookCard.querySelector('.progress-container');
+            const progressBar = bookCard.querySelector('.progress-bar');
+            const progressPercentage = bookCard.querySelector('.progress-percentage');
+            
+            // إظهار شريط التقدم
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressPercentage.textContent = '0%';
+            
+            // إظهار تأثير التحميل على الزر
+            button.classList.add('loading');
+            
+            // تعطيل الزر أثناء التحميل
+            button.disabled = true;
+            
+            // إظهار رسالة التحميل
+            const message = document.getElementById('downloadMessage');
+            message.classList.add('show');
+            
+            // محاكاة عملية التحميل مع تحديث شريط التقدم
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // تحديث شريط التقدم للمرة الأخيرة
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = Math.floor(progress) + '%';
+                    
+                    // بعد اكتمال التحميل
+                    setTimeout(() => {
+                        // إخفاء شريط التقدم
+                        progressContainer.style.display = 'none';
+                        
+                        // إزالة تأثير التحميل من الزر
+                        button.classList.remove('loading');
+                        
+                        // إعادة تمكين الزر
+                        button.disabled = false;
+                        
+                        // إخفاء رسالة التحميل
+                        message.classList.remove('show');
+                        
+                        // بدء التحميل الفعلي
+                        const link = document.createElement('a');
+                        link.href = downloadLink;
+                        link.download = 'الكتاب الدراسي.pdf';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }, 500);
+                } else {
+                    // تحديث شريط التقدم
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = Math.floor(progress) + '%';
+                }
+            }, 200);
+        }
+        
+        // تهيئة الصفحة عند التحميل
+        window.onload = function() {
+            createBookCards();
+        };
+    </script>
+</body>
+</html>
