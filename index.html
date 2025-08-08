@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>صورة ثابتة</title>
+    <title>عرض صور متتابعة</title>
     <style>
         * {
             margin: 0;
@@ -21,28 +21,106 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            background: white; /* خلفية بيضاء فقط */
-        }
-        
-        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        .fixed-image {
-            width: 370px; /* العرض المطلوب */
-            height: 160px; /* الطول المطلوب */
-            display: block;
+        .container {
+            width: 370px;
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 3px solid #fff;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
             object-fit: cover;
             pointer-events: none;
             -webkit-user-drag: none;
             user-drag: none;
         }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        .title {
+            position: absolute;
+            top: -40px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .controls-info {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        /* نقاط المؤشر */
+        .dots-container {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            margin: 0 5px;
+            cursor: default;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body>
-    <img src="https://i.postimg.cc/D0yG5L6L/image.jpg" alt="صورة ثابتة" class="fixed-image">
+    <div class="title">عرض صور ثابتة بدون تفاعل</div>
+    
+    <div class="container">
+        <img src="https://i.postimg.cc/Njzw0cZc/image.jpg" alt="صورة 1" class="slide active">
+        <img src="https://i.postimg.cc/fbRkGDmQ/image.jpg" alt="صورة 2" class="slide">
+        <img src="https://i.postimg.cc/1t725c83/image.jpg" alt="صورة 3" class="slide">
+        <img src="https://i.postimg.cc/D0yG5L6L/image.jpg" alt="صورة 4" class="slide">
+        
+        <div class="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+    
+    <div class="controls-info">التغيير تلقائي كل 5 ثواني - لا يمكن التفاعل مع الصور</div>
 
     <script>
         // منع جميع الأحداث التفاعلية
@@ -75,6 +153,29 @@
         setInterval(function() {
             window.scrollTo(0, 0);
         }, 100);
+        
+        // عرض الشرائح التلقائي
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        
+        function showSlide() {
+            // إخفاء جميع الشرائح
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // إظهار الشريحة الحالية
+            slides[currentSlide].classList.add('active');
+            
+            // تحديث النقاط المؤشرة
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentSlide].classList.add('active');
+            
+            // الانتقال إلى الشريحة التالية
+            currentSlide = (currentSlide + 1) % slides.length;
+        }
+        
+        // تبديل الشرائح كل 5 ثواني
+        setInterval(showSlide, 5000);
     </script>
 </body>
 </html>
