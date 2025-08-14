@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.D.F - نظام الدخول السري</title>
+    <title>R.D.F - نظام الدخول المتقدم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -489,8 +489,8 @@
     <div class="login-container">
         <div class="login-header">
             <div class="login-logo">R.D.F</div>
-            <h1 class="login-title">نظام الوصول السري</h1>
-            <p class="login-subtitle">المستوى ٩ - الوصول للأعضاء المصرح لهم فقط</p>
+            <h1 class="login-title">نظام الوصول المتقدم</h1>
+            <p class="login-subtitle">المستوى ٩ - نظام حظر غير قابل للتجاوز</p>
         </div>
         
         <form id="loginForm">
@@ -521,13 +521,14 @@
             <div class="timer" id="timer">15:00</div>
             <p class="blocked-info">الوقت المتبقي حتى فك الحظر:</p>
             <p class="blocked-info">عند محاولة دخول أخرى بعد انتهاء الحظر سيكون وقت الحظر 30 دقيقة</p>
+            <p class="blocked-info">ملاحظة: الحظر مرتبط بجهازك ولا يمكن تجاوزه بمسح البيانات</p>
         </div>
         
         <!-- منطقة تخمين كلمات المرور -->
         <div class="hacking-section" id="hackingSection">
             <div class="hacking-header">
                 <i class="fas fa-shield-alt"></i>
-                <h2>جاري  التحقق من التشفير</h2>
+                <h2>جاري اختراق أنظمة الحماية...</h2>
             </div>
             <div class="password-attempts" id="passwordAttempts"></div>
         </div>
@@ -552,7 +553,7 @@
             { username: "phantom", password: "ghost123", name: "الفانتوم", page: "bbb.html" },
             { username: "dark_knight", password: "bat2023", name: "الفارس المظلم", page: "ccc.html" },
             { username: "silent_wolf", password: "forest88", name: "الذئب الصامت", page: "ddd.html" },
-            { username: "cyber_queen", password: "digital99", name: "حسين العدني", page: "ddd.html" }
+            { username: "cyber_queen", password: "digital99", name: "ملكة السيبر", page: "eee.html" }
         ];
         
         // كلمات مرور عشوائية للتأثير
@@ -581,28 +582,93 @@
         let attempts = MAX_ATTEMPTS;
         let timerInterval = null;
         
-        // عند تحميل الصفحة، تحقق من حالة الحظر
-        document.addEventListener('DOMContentLoaded', function() {
-            const blockedUntil = localStorage.getItem('blockedUntil');
-            const username = localStorage.getItem('lastUsername');
-            const blockCount = localStorage.getItem('blockCount') || 0;
+        // إنشاء بصمة رقمية فريدة للمستخدم
+        async function createFingerprint() {
+            const components = [];
             
-            if (blockedUntil && username) {
+            // 1. معلومات المتصفح
+            components.push(navigator.userAgent);
+            components.push(navigator.platform);
+            components.push(navigator.language);
+            components.push(navigator.hardwareConcurrency);
+            components.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
+            
+            // 2. معلومات الوقت
+            const timezone = new Date().getTimezoneOffset();
+            components.push(timezone);
+            
+            // 3. إمكانيات المتصفح
+            const canvas = document.createElement('canvas');
+            if (canvas.getContext) {
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#f60';
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = '#069';
+                ctx.fillText('RDF_SECURITY', 2, 15);
+                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                ctx.fillText('RDF_SECURITY', 4, 17);
+                
+                const canvasData = canvas.toDataURL();
+                components.push(canvasData);
+            }
+            
+            // 4. WebGL fingerprint
+            if (window.WebGLRenderingContext) {
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        components.push(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+                        components.push(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
+                    }
+                }
+            }
+            
+            // 5. تجميع البصمة
+            const combined = components.join('|');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(combined);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // الحصول على البصمة الرقمية
+        let userFingerprint = '';
+        createFingerprint().then(fp => {
+            userFingerprint = fp;
+            console.log('Fingerprint generated:', userFingerprint);
+        });
+        
+        // عند تحميل الصفحة، تحقق من حالة الحظر
+        document.addEventListener('DOMContentLoaded', async function() {
+            // محاولة الحصول على البصمة أولاً
+            if (!userFingerprint) {
+                userFingerprint = await createFingerprint();
+            }
+            
+            // التحقق من حالة الحظر باستخدام البصمة
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint];
+            
+            if (userBlockData) {
                 const currentTime = new Date().getTime();
-                const remainingTime = blockedUntil - currentTime;
+                const remainingTime = userBlockData.blockedUntil - currentTime;
                 
                 if (remainingTime > 0) {
-                    showBlockedMessage(remainingTime, username);
+                    showBlockedMessage(remainingTime);
+                    return;
                 } else {
                     // إزالة الحظر إذا انتهى الوقت
-                    localStorage.removeItem('blockedUntil');
-                    localStorage.removeItem('lastUsername');
-                    localStorage.removeItem('blockCount');
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
                 }
             }
             
             // استعادة عدد المحاولات
-            const savedAttempts = localStorage.getItem('remainingAttempts');
+            const savedAttempts = localStorage.getItem('remainingAttempts_' + userFingerprint);
             if (savedAttempts) {
                 attempts = parseInt(savedAttempts);
                 if (attempts < MAX_ATTEMPTS) {
@@ -613,24 +679,32 @@
         });
         
         // عند تقديم النموذج
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // التأكد من وجود البصمة الرقمية
+            if (!userFingerprint) {
+                userFingerprint = await createFingerprint();
+            }
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
             // التحقق من حالة الحظر
-            const blockedUntil = localStorage.getItem('blockedUntil');
-            if (blockedUntil) {
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint];
+            
+            if (userBlockData) {
                 const currentTime = new Date().getTime();
-                const remainingTime = blockedUntil - currentTime;
+                const remainingTime = userBlockData.blockedUntil - currentTime;
                 
                 if (remainingTime > 0) {
-                    showBlockedMessage(remainingTime, username);
+                    showBlockedMessage(remainingTime);
                     return;
                 } else {
                     // إزالة الحظر إذا انتهى الوقت
-                    localStorage.removeItem('blockedUntil');
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
                 }
             }
             
@@ -694,7 +768,7 @@
         // معالجة فشل تسجيل الدخول
         function handleFailedLogin(username) {
             attempts--;
-            localStorage.setItem('remainingAttempts', attempts);
+            localStorage.setItem('remainingAttempts_' + userFingerprint, attempts);
             
             if (attempts > 0) {
                 // إظهار عدد المحاولات المتبقية
@@ -718,8 +792,10 @@
         // حظر المستخدم
         function blockUser(username) {
             // الحصول على عدد مرات الحظر السابقة
-            const blockCount = parseInt(localStorage.getItem('blockCount') || 0);
-            const newBlockCount = blockCount + 1;
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint] || { blockCount: 0 };
+            
+            const newBlockCount = userBlockData.blockCount + 1;
             
             // تحديد مدة الحظر
             const blockDuration = newBlockCount === 1 ? 15 : 30; // 15 دقيقة للحظر الأول، 30 دقيقة للثاني
@@ -729,29 +805,35 @@
             const currentTime = new Date().getTime();
             const blockedUntil = currentTime + blockTime;
             
+            // تحديث بيانات الحظر
+            blockedUsers[userFingerprint] = {
+                blockedUntil,
+                blockCount: newBlockCount,
+                lastUsername: username,
+                timestamp: new Date().toISOString()
+            };
+            
             // حفظ بيانات الحظر
-            localStorage.setItem('blockedUntil', blockedUntil);
-            localStorage.setItem('lastUsername', username);
-            localStorage.setItem('blockCount', newBlockCount);
-            localStorage.removeItem('remainingAttempts');
+            localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+            localStorage.removeItem('remainingAttempts_' + userFingerprint);
             
             // إظهار رسالة الحظر
-            showBlockedMessage(blockTime, username);
+            showBlockedMessage(blockTime);
         }
         
         // إظهار رسالة الحظر
-        function showBlockedMessage(duration, username) {
+        function showBlockedMessage(duration) {
             hackingSection.style.display = 'none';
             loginForm.style.display = 'none';
             attemptsInfo.style.display = 'none';
             blockedMessage.style.display = 'block';
             
             // بدء العداد التنازلي
-            startTimer(duration, username);
+            startTimer(duration);
         }
         
         // بدء العداد التنازلي
-        function startTimer(duration, username) {
+        function startTimer(duration) {
             let timeLeft = duration;
             
             // إيقاف أي عداد سابق
@@ -766,13 +848,16 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     
-                    // إزالة الحظر وإعادة تعيين الصفحة
-                    localStorage.removeItem('blockedUntil');
+                    // إزالة الحظر
+                    const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+                    
+                    // إعادة تعيين الصفحة
                     blockedMessage.style.display = 'none';
                     loginForm.style.display = 'block';
-                    document.getElementById('username').value = username;
                     attempts = MAX_ATTEMPTS;
-                    localStorage.setItem('remainingAttempts', attempts);
+                    localStorage.setItem('remainingAttempts_' + userFingerprint, attempts);
                     attemptsInfo.style.display = 'block';
                     remainingAttempts.textContent = attempts;
                     return;
@@ -780,9 +865,6 @@
                 
                 // تحديث العداد
                 updateTimerDisplay(timeLeft);
-                
-                // حفظ الوقت المتبقي
-                localStorage.setItem('lastRemainingTime', timeLeft);
             }, 1000);
         }
         
@@ -805,8 +887,7 @@
                 window.location.href = page;
                 // إعادة تعيين المحاولات عند نجاح الدخول
                 attempts = MAX_ATTEMPTS;
-                localStorage.removeItem('remainingAttempts');
-                localStorage.removeItem('blockCount');
+                localStorage.removeItem('remainingAttempts_' + userFingerprint);
             }, 5000);
         }
         
