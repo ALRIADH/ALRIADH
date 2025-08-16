@@ -3,34 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.D.F - النظام الآمن غير القابل للتجاوز</title>
+    <title>R.D.F - نظام الدخول المتقدم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ... (نفس التصميم السابق) ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --dark-bg: #0a0a12;
+            --primary: #00f7ff;
+            --secondary: #8a00ff;
+            --accent: #ff003c;
+            --text: #e0e0e0;
+            --glow: 0 0 15px rgba(0, 247, 255, 0.7);
+            --dark-glow: 0 0 15px rgba(138, 0, 255, 0.5);
+        }
+        
+        body {
+            background: radial-gradient(ellipse at center, #070710 0%, #000000 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* تأثيرات الخلفية */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 0, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 247, 255, 0.05) 0%, transparent 40%),
+                repeating-linear-gradient(45deg, rgba(10, 10, 18, 0.8) 0px, rgba(10, 10, 18, 0.8) 1px, transparent 1px, transparent 11px),
+                repeating-linear-gradient(135deg, rgba(10, 10, 18, 0.8) 0px, rgba(10, 10, 18, 0.8) 1px, transparent 1px, transparent 11px);
+            z-index: -2;
+        }
+        
+        /* الرسوم المتحركة في الخلفية */
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            filter: blur(20px);
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: 10%;
+            left: 20%;
+            animation: float1 25s infinite linear;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            top: 60%;
+            left: 70%;
+            animation: float2 20s infinite linear;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--accent);
+            top: 30%;
+            left: 80%;
+            animation: float3 15s infinite linear;
+        }
+        
+        @keyframes float1 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 100px) rotate(360deg); }
+        }
+        
+        @keyframes float2 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-150px, -80px) rotate(-360deg); }
+        }
+        
+        @keyframes float3 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(120px, -100px) rotate(180deg); }
+        }
+        
+        /* تصميم لوحة الدخول */
+        .login-container {
+            background: rgba(15, 15, 25, 0.85);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 15px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7), var(--glow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .login-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--glow);
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        
+        .login-subtitle {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* حقول الإدخال */
+        .input-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(25, 25, 40, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+        
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: #555;
+        }
+        
+        /* زر الدخول */
+        .login-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .login-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .login-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* نظام المحاولات والحظر */
+        .attempts-info {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 0, 60, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            display: none;
+        }
+        
+        .attempts-count {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .blocked-message {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 0, 60, 0.2);
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .blocked-message::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            animation: scanning 2s infinite linear;
+        }
+        
+        .blocked-title {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            margin: 1rem 0;
+        }
+        
+        .blocked-info {
+            color: #ff9999;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        
+        /* منطقة التخمين */
+        .hacking-section {
+            margin-top: 1rem;
+            background: rgba(10, 5, 15, 0.7);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hacking-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--accent);
+            animation: scanning 2s infinite linear;
+        }
+        
+        .hacking-header {
+            display: flex;
+            align-items: center;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .hacking-header i {
+            margin-left: 0.8rem;
+            animation: pulse 1s infinite;
+        }
+        
+        .password-attempts {
+            height: 100px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            padding: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        
+        .password-attempt {
+            color: #ff5555;
+            animation: fadeIn 0.2s forwards;
+        }
+        
+        .success-attempt {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* رسالة الترحيب */
+        .welcome-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+        
+        .welcome-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .welcome-title {
+            font-size: 4rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            line-height: 1.2;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.8rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .member-name {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 2.2rem;
+            margin: 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .access-code {
+            font-size: 1.5rem;
+            letter-spacing: 8px;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+        }
+        
+        /* الرسوم المتحركة */
+        @keyframes scanning {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes glitch {
+            0% { text-shadow: 0 0 5px var(--primary); }
+            25% { text-shadow: 5px 0 5px var(--accent); }
+            50% { text-shadow: -5px 0 5px var(--secondary); }
+            100% { text-shadow: 0 0 5px var(--primary); }
+        }
+        
+        .glitch-text {
+            animation: glitch 1s infinite;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .login-logo {
+                font-size: 2.5rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- ... (نفس الهيكل السابق) ... -->
+    <!-- التأثيرات البصرية -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <!-- لوحة تسجيل الدخول -->
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">R.D.F</div>
+            <h1 class="login-title">نظام الوصول المتقدم</h1>
+            <p class="login-subtitle">المستوى ٩ - نظام حظر غير قابل للتجاوز</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">اسم المستخدم</label>
+                <input type="text" id="username" name="username" required>
+                <i class="fas fa-user-secret"></i>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" name="password" required autocomplete="off">
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <button type="submit" class="login-btn">تفعيل الدخول</button>
+        </form>
+        
+        <!-- معلومات المحاولات -->
+        <div class="attempts-info" id="attemptsInfo">
+            <p>لديك <span class="attempts-count" id="remainingAttempts">3</span> محاولات متبقية</p>
+        </div>
+        
+        <!-- رسالة الحظر -->
+        <div class="blocked-message" id="blockedMessage">
+            <h2 class="blocked-title">تم حظر حسابك مؤقتًا</h2>
+            <p>لقد تجاوزت عدد المحاولات المسموح بها</p>
+            <div class="timer" id="timer">15:00</div>
+            <p class="blocked-info">الوقت المتبقي حتى فك الحظر:</p>
+            <p class="blocked-info">عند محاولة دخول أخرى بعد انتهاء الحظر سيكون وقت الحظر 30 دقيقة</p>
+            <p class="blocked-info">ملاحظة: الحظر مرتبط بجهازك ولا يمكن تجاوزه بمسح البيانات</p>
+        </div>
+        
+        <!-- منطقة تخمين كلمات المرور -->
+        <div class="hacking-section" id="hackingSection">
+            <div class="hacking-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2>جاري فك تشفير كلمة المرور  ...</h2>
+            </div>
+            <div class="password-attempts" id="passwordAttempts"></div>
+        </div>
+    </div>
+    
+    <!-- رسالة الترحيب بعد الدخول -->
+    <div class="welcome-message" id="welcomeMessage">
+        <div class="welcome-content">
+            <h1 class="welcome-title">تم التحقق بنجاح</h1>
+            <p class="welcome-subtitle">تمت المصادقة على هويتك بنجاح</p>
+            <div class="member-name" id="memberName">اسم العضو</div>
+            <p class="welcome-subtitle">مرحبًا بك في النظام الأساسي</p>
+            <div class="access-code">RDF-9-ALPHA-X</div>
+            <p class="welcome-subtitle">جاري تحويلك إلى منطقة العمليات...</p>
+        </div>
+    </div>
     
     <script>
-        // ... (بيانات الأعضاء وكلمات المرور العشوائية) ...
+        // بيانات الأعضاء (المستخدمين وكلمات المرور وصفحاتهم)
+        const members = [
+            { username: "agent_x", password: "shadow007", name: "العميل X", page: "aaa.html" },
+            { username: "phantom", password: "ghost123", name: "الفانتوم", page: "bbb.html" },
+            { username: "dark_knight", password: "bat2023", name: "الفارس المظلم", page: "ccc.html" },
+            { username: "silent_wolf", password: "forest88", name: "الذئب الصامت", page: "ddd.html" },
+            { username: "عبود", password: "111", name: "ملك لامينالا", page: "eee.html" }
+        ];
         
-        // تقنيات متعددة لإنشاء بصمة فريدة للمستخدم
-        async function createAdvancedFingerprint() {
+        // كلمات مرور عشوائية للتأثير
+        const randomPasswords = [
+            "********", "#######", "%%%%%%%", "$$$$$$$", 
+            "letmein", "password123", "adminadmin", "secret007",
+            "qwertyuiop", "asdfghjkl", "zxcvbnm", "1234567890",
+            "iloveyou", "sunshine", "football", "baseball",
+            "welcome", "login", "passw0rd", "access",
+            "dragon", "superman", "trustno1", "starwars"
+        ];
+        
+        // العناصر الرئيسية
+        const loginForm = document.getElementById('loginForm');
+        const hackingSection = document.getElementById('hackingSection');
+        const passwordAttempts = document.getElementById('passwordAttempts');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const memberName = document.getElementById('memberName');
+        const attemptsInfo = document.getElementById('attemptsInfo');
+        const remainingAttempts = document.getElementById('remainingAttempts');
+        const blockedMessage = document.getElementById('blockedMessage');
+        const timer = document.getElementById('timer');
+        
+        // تهيئة المحاولات
+        const MAX_ATTEMPTS = 3;
+        let attempts = MAX_ATTEMPTS;
+        let timerInterval = null;
+        
+        // إنشاء بصمة رقمية فريدة للمستخدم
+        async function createFingerprint() {
             const components = [];
             
-            // 1. معلومات المتصفح والجهاز
+            // 1. معلومات المتصفح
             components.push(navigator.userAgent);
             components.push(navigator.platform);
             components.push(navigator.language);
             components.push(navigator.hardwareConcurrency);
             components.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
             
-            // 2. معلومات الوقت والمنطقة
+            // 2. معلومات الوقت
             const timezone = new Date().getTimezoneOffset();
             components.push(timezone);
             
-            // 3. بصمة Canvas المتقدمة
+            // 3. إمكانيات المتصفح
             const canvas = document.createElement('canvas');
             if (canvas.getContext) {
                 const ctx = canvas.getContext('2d');
@@ -39,223 +606,298 @@
                 ctx.fillStyle = '#f60';
                 ctx.fillRect(125, 1, 62, 20);
                 ctx.fillStyle = '#069';
-                ctx.fillText('RDF_SECURE_SYSTEM', 2, 15);
+                ctx.fillText('RDF_SECURITY', 2, 15);
                 ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-                ctx.fillText('RDF_SECURE_SYSTEM', 4, 17);
+                ctx.fillText('RDF_SECURITY', 4, 17);
                 
                 const canvasData = canvas.toDataURL();
                 components.push(canvasData);
             }
             
-            // 4. بصمة WebGL
-            let webglData = '';
+            // 4. WebGL fingerprint
             if (window.WebGLRenderingContext) {
-                try {
-                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                    if (gl) {
-                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                        if (debugInfo) {
-                            webglData = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '|' + 
-                                        gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                        }
-                        components.push(webglData);
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        components.push(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+                        components.push(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
                     }
-                } catch (e) {
-                    console.error('WebGL error:', e);
                 }
             }
             
-            // 5. بصمة الصوت
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const analyser = audioContext.createAnalyser();
-                
-                oscillator.connect(analyser);
-                analyser.connect(audioContext.destination);
-                
-                oscillator.start();
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                analyser.getByteFrequencyData(dataArray);
-                oscillator.stop();
-                
-                components.push(dataArray.join(','));
-            } catch (e) {
-                console.error('Audio fingerprint error:', e);
-            }
-            
-            // 6. تجميع البصمة وتجزئتها
+            // 5. تجميع البصمة
             const combined = components.join('|');
             const encoder = new TextEncoder();
             const data = encoder.encode(combined);
-            const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
         
-        // نظام التخزين المتعدد المقاوم للمسح
-        class PersistentStorage {
-            constructor() {
-                this.storageKeys = [
-                    'rdf_block_data',
-                    'rdf_security_data',
-                    'rdf_fingerprint_data'
-                ];
-            }
-            
-            // تخزين البيانات في أماكن متعددة
-            async saveBlockData(data) {
-                // 1. التخزين في localStorage
-                localStorage.setItem(this.storageKeys[0], JSON.stringify(data));
-                
-                // 2. التخزين في IndexedDB
-                await this.saveToIndexedDB(data);
-                
-                // 3. التخزين في SessionStorage
-                sessionStorage.setItem(this.storageKeys[1], JSON.stringify(data));
-                
-                // 4. التخزين في ملفات الكوكيز
-                this.setCookie(this.storageKeys[2], JSON.stringify(data), 365);
-            }
-            
-            // استرجاع البيانات من أي مصدر متاح
-            async getBlockData() {
-                // 1. التحقق من localStorage
-                const lsData = localStorage.getItem(this.storageKeys[0]);
-                if (lsData) return JSON.parse(lsData);
-                
-                // 2. التحقق من IndexedDB
-                const idbData = await this.getFromIndexedDB();
-                if (idbData) return idbData;
-                
-                // 3. التحقق من SessionStorage
-                const ssData = sessionStorage.getItem(this.storageKeys[1]);
-                if (ssData) return JSON.parse(ssData);
-                
-                // 4. التحقق من الكوكيز
-                const cookieData = this.getCookie(this.storageKeys[2]);
-                if (cookieData) return JSON.parse(cookieData);
-                
-                return null;
-            }
-            
-            // تخزين البيانات في IndexedDB
-            async saveToIndexedDB(data) {
-                return new Promise((resolve) => {
-                    const request = indexedDB.open('RDF_SecureStorage', 1);
-                    
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-                        if (!db.objectStoreNames.contains('securityData')) {
-                            db.createObjectStore('securityData');
-                        }
-                    };
-                    
-                    request.onsuccess = (event) => {
-                        const db = event.target.result;
-                        const transaction = db.transaction('securityData', 'readwrite');
-                        const store = transaction.objectStore('securityData');
-                        store.put(data, 'blockInfo');
-                        resolve();
-                    };
-                    
-                    request.onerror = () => resolve();
-                });
-            }
-            
-            // استرجاع البيانات من IndexedDB
-            async getFromIndexedDB() {
-                return new Promise((resolve) => {
-                    const request = indexedDB.open('RDF_SecureStorage', 1);
-                    
-                    request.onsuccess = (event) => {
-                        const db = event.target.result;
-                        const transaction = db.transaction('securityData', 'readonly');
-                        const store = transaction.objectStore('securityData');
-                        const request = store.get('blockInfo');
-                        
-                        request.onsuccess = (e) => resolve(e.target.result);
-                        request.onerror = () => resolve(null);
-                    };
-                    
-                    request.onerror = () => resolve(null);
-                });
-            }
-            
-            // وظائف إدارة الكوكيز
-            setCookie(name, value, days) {
-                const date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                const expires = "expires=" + date.toUTCString();
-                document.cookie = name + "=" + value + ";" + expires + ";path=/";
-            }
-            
-            getCookie(name) {
-                const cookieName = name + "=";
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    let cookie = cookies[i];
-                    while (cookie.charAt(0) === ' ') {
-                        cookie = cookie.substring(1);
-                    }
-                    if (cookie.indexOf(cookieName) === 0) {
-                        return cookie.substring(cookieName.length, cookie.length);
-                    }
-                }
-                return null;
-            }
-        }
-
-        // عند تحميل الصفحة
+        // الحصول على البصمة الرقمية
+        let userFingerprint = '';
+        createFingerprint().then(fp => {
+            userFingerprint = fp;
+            console.log('Fingerprint generated:', userFingerprint);
+        });
+        
+        // عند تحميل الصفحة، تحقق من حالة الحظر
         document.addEventListener('DOMContentLoaded', async function() {
-            // إنشاء بصمة متقدمة
-            userFingerprint = await createAdvancedFingerprint();
+            // محاولة الحصول على البصمة أولاً
+            if (!userFingerprint) {
+                userFingerprint = await createFingerprint();
+            }
             
-            // تهيئة نظام التخزين المقاوم للمسح
-            const persistentStorage = new PersistentStorage();
-            const blockData = await persistentStorage.getBlockData();
+            // التحقق من حالة الحظر باستخدام البصمة
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint];
             
-            if (blockData && blockData.fingerprint === userFingerprint) {
+            if (userBlockData) {
                 const currentTime = new Date().getTime();
-                const remainingTime = blockData.blockedUntil - currentTime;
+                const remainingTime = userBlockData.blockedUntil - currentTime;
                 
                 if (remainingTime > 0) {
                     showBlockedMessage(remainingTime);
                     return;
+                } else {
+                    // إزالة الحظر إذا انتهى الوقت
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
                 }
             }
             
-            // ... (بقية كود التهيئة) ...
+            // استعادة عدد المحاولات
+            const savedAttempts = localStorage.getItem('remainingAttempts_' + userFingerprint);
+            if (savedAttempts) {
+                attempts = parseInt(savedAttempts);
+                if (attempts < MAX_ATTEMPTS) {
+                    attemptsInfo.style.display = 'block';
+                    remainingAttempts.textContent = attempts;
+                }
+            }
         });
         
-        // حظر المستخدم مع التخزين المقاوم للمسح
-        async function blockUser(username) {
-            const persistentStorage = new PersistentStorage();
-            const blockData = await persistentStorage.getBlockData() || {};
+        // عند تقديم النموذج
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            const blockCount = blockData.blockCount || 0;
-            const newBlockCount = blockCount + 1;
-            const blockDuration = newBlockCount === 1 ? 15 : 30;
-            const blockTime = blockDuration * 60 * 1000;
+            // التأكد من وجود البصمة الرقمية
+            if (!userFingerprint) {
+                userFingerprint = await createFingerprint();
+            }
             
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // التحقق من حالة الحظر
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint];
+            
+            if (userBlockData) {
+                const currentTime = new Date().getTime();
+                const remainingTime = userBlockData.blockedUntil - currentTime;
+                
+                if (remainingTime > 0) {
+                    showBlockedMessage(remainingTime);
+                    return;
+                } else {
+                    // إزالة الحظر إذا انتهى الوقت
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+                }
+            }
+            
+            // إخفاء رسالة المحاولات
+            attemptsInfo.style.display = 'none';
+            
+            // إظهار منطقة التخمين
+            hackingSection.style.display = 'block';
+            loginForm.style.opacity = '0.3';
+            passwordAttempts.innerHTML = '';
+            
+            // بدء عملية المحاكاة
+            simulateHacking(username, password);
+        });
+        
+        // محاكاة عملية تخمين كلمات المرور
+        function simulateHacking(username, enteredPassword) {
+            let hackingAttempts = 0;
+            const maxHackingAttempts = 15;
+            const correctMember = members.find(m => m.username === username && m.password === enteredPassword);
+            
+            const hackingInterval = setInterval(() => {
+                if (hackingAttempts >= maxHackingAttempts) {
+                    clearInterval(hackingInterval);
+                    
+                    // التأخير قبل عرض النتيجة
+                    setTimeout(() => {
+                        if (correctMember) {
+                            // إذا كان الدخول ناجحًا
+                            showSuccessMessage(correctMember.name, correctMember.page);
+                        } else {
+                            // إذا كان الدخول فاشلًا
+                            handleFailedLogin(username);
+                        }
+                    }, 1000);
+                    return;
+                }
+                
+                // إضافة محاولة عشوائية
+                const randomIndex = Math.floor(Math.random() * randomPasswords.length);
+                const randomPassword = randomPasswords[randomIndex];
+                
+                const attemptElement = document.createElement('div');
+                attemptElement.classList.add('password-attempt');
+                
+                if (hackingAttempts === maxHackingAttempts - 1 && correctMember) {
+                    // في المحاولة الأخيرة، إظهار كلمة المرور الصحيحة
+                    attemptElement.textContent = `> Trying: ${correctMember.password}`;
+                    attemptElement.classList.add('success-attempt');
+                } else {
+                    attemptElement.textContent = `> Trying: ${randomPassword}`;
+                }
+                
+                passwordAttempts.appendChild(attemptElement);
+                passwordAttempts.scrollTop = passwordAttempts.scrollHeight;
+                
+                hackingAttempts++;
+            }, 200);
+        }
+        
+        // معالجة فشل تسجيل الدخول
+        function handleFailedLogin(username) {
+            attempts--;
+            localStorage.setItem('remainingAttempts_' + userFingerprint, attempts);
+            
+            if (attempts > 0) {
+                // إظهار عدد المحاولات المتبقية
+                attemptsInfo.style.display = 'block';
+                remainingAttempts.textContent = attempts;
+                
+                passwordAttempts.innerHTML += `<div class="password-attempt" style="color:${getComputedStyle(document.documentElement).getPropertyValue('--accent')}">> فشل التحقق! لديك ${attempts} محاولات متبقية</div>`;
+            } else {
+                // حظر المستخدم
+                blockUser(username);
+            }
+            
+            // إعادة تعيين النموذج بعد التأخير
+            setTimeout(() => {
+                hackingSection.style.display = 'none';
+                loginForm.style.opacity = '1';
+                document.getElementById('password').value = '';
+            }, 3000);
+        }
+        
+        // حظر المستخدم
+        function blockUser(username) {
+            // الحصول على عدد مرات الحظر السابقة
+            const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+            const userBlockData = blockedUsers[userFingerprint] || { blockCount: 0 };
+            
+            const newBlockCount = userBlockData.blockCount + 1;
+            
+            // تحديد مدة الحظر
+            const blockDuration = newBlockCount === 1 ? 15 : 30; // 15 دقيقة للحظر الأول، 30 دقيقة للثاني
+            const blockTime = blockDuration * 60 * 1000; // تحويل إلى مللي ثانية
+            
+            // حساب وقت نهاية الحظر
             const currentTime = new Date().getTime();
             const blockedUntil = currentTime + blockTime;
             
-            const newBlockData = {
-                fingerprint: userFingerprint,
+            // تحديث بيانات الحظر
+            blockedUsers[userFingerprint] = {
                 blockedUntil,
                 blockCount: newBlockCount,
                 lastUsername: username,
-                timestamp: new Date().toISOString(),
-                deviceInfo: navigator.userAgent,
-                platform: navigator.platform
+                timestamp: new Date().toISOString()
             };
             
-            await persistentStorage.saveBlockData(newBlockData);
+            // حفظ بيانات الحظر
+            localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+            localStorage.removeItem('remainingAttempts_' + userFingerprint);
+            
+            // إظهار رسالة الحظر
             showBlockedMessage(blockTime);
         }
         
-        // ... (بقية الدوال مع تعديلات طفيفة) ...
+        // إظهار رسالة الحظر
+        function showBlockedMessage(duration) {
+            hackingSection.style.display = 'none';
+            loginForm.style.display = 'none';
+            attemptsInfo.style.display = 'none';
+            blockedMessage.style.display = 'block';
+            
+            // بدء العداد التنازلي
+            startTimer(duration);
+        }
+        
+        // بدء العداد التنازلي
+        function startTimer(duration) {
+            let timeLeft = duration;
+            
+            // إيقاف أي عداد سابق
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // تحديث العداد فوراً
+            updateTimerDisplay(timeLeft);
+            
+            timerInterval = setInterval(() => {
+                timeLeft -= 1000;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    
+                    // إزالة الحظر
+                    const blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '{}');
+                    delete blockedUsers[userFingerprint];
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+                    
+                    // إعادة تعيين الصفحة
+                    blockedMessage.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    attempts = MAX_ATTEMPTS;
+                    localStorage.setItem('remainingAttempts_' + userFingerprint, attempts);
+                    attemptsInfo.style.display = 'block';
+                    remainingAttempts.textContent = attempts;
+                    return;
+                }
+                
+                // تحديث العداد
+                updateTimerDisplay(timeLeft);
+            }, 1000);
+        }
+        
+        // تحديث عرض العداد
+        function updateTimerDisplay(timeLeft) {
+            const minutes = Math.floor(timeLeft / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // عرض رسالة النجاح
+        function showSuccessMessage(name, page) {
+            memberName.textContent = name;
+            welcomeMessage.style.opacity = '1';
+            welcomeMessage.style.pointerEvents = 'auto';
+            
+            // الانتقال إلى الصفحة بعد التأخير
+            setTimeout(() => {
+                window.location.href = page;
+                // إعادة تعيين المحاولات عند نجاح الدخول
+                attempts = MAX_ATTEMPTS;
+                localStorage.removeItem('remainingAttempts_' + userFingerprint);
+            }, 5000);
+        }
+        
+        // تأثيرات عشوائية لزيادة الرعب
+        setInterval(() => {
+            const hackingHeader = document.querySelector('.hacking-header h2');
+            if (hackingHeader && hackingSection.style.display === 'block') {
+                hackingHeader.classList.toggle('glitch-text');
+            }
+        }, 3000);
     </script>
 </body>
 </html>
