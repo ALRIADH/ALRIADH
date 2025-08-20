@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R.D.F - الصفحة الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        :root {
+            --dark-bg: #0a0a12;
+            --primary: #00aaff;
+            --accent: #ff003c;
+            --text: #e0e0e0;
+            --light-gray: #1e1e2a;
+            --card-bg: rgba(20, 20, 30, 0.7);
+            --glow: 0 0 15px rgba(0, 170, 255, 0.3);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #080817, #0d0d1a);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* تأثيرات الخلفية */
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 170, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 170, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        /* شريط التنقل المطور */
+        .navbar {
+            background: rgba(15, 15, 25, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            box-shadow: var(--glow);
+        }
+        
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #00ddff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 1.2rem;
+        }
+        
+        .nav-icon {
+            color: var(--text);
+            font-size: 1.3rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-icon:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            left: -8px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* تصميم يشبه تطبيق الجوال */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1rem;
+            padding-bottom: 80px;
+        }
+        
+        /* رأس الصفحة */
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.5rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: var(--glow);
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-greeting {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 0.3rem;
+        }
+        
+        .user-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #00ddff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .user-rank {
+            font-size: 0.9rem;
+            background: rgba(255, 0, 60, 0.2);
+            color: #ff5577;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255, 0, 60, 0.3);
+        }
+        
+        /* بطاقات الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 170, 255, 0.2);
+        }
+        
+        .stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* بطاقات الميزات */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 170, 255, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .feature-description {
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        
+        /* بطاقات الأعضاء */
+        .members-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .member-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 170, 255, 0.2);
+        }
+        
+        .member-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            box-shadow: var(--glow);
+            margin-bottom: 1rem;
+        }
+        
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+        
+        .member-rank {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            background: rgba(0, 170, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+        
+        .member-skills {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        /* شريط التنقل السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #aaa;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary);
+        }
+        
+        /* الأقسام الرئيسية */
+        .section-title {
+            font-size: 1.5rem;
+            margin: 2rem 0 1.5rem;
+            padding-left: 0.5rem;
+            position: relative;
+            color: var(--text);
+            font-weight: 700;
+        }
+        
+        .section-title::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -0.5rem;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 70%;
+            background: var(--primary);
+            border-radius: 5px;
+        }
+        
+        /* التأثيرات والرسوم المتحركة */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-card {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 0.8rem;
+            }
+            
+            .user-header {
+                padding: 1rem 0.5rem;
+            }
+            
+            .user-avatar {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .user-name {
+                font-size: 1.4rem;
+            }
+            
+            .stat-card, .feature-card, .member-card {
+                padding: 1.2rem 0.8rem;
+            }
+            
+            .stat-value {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .stats-grid, .features-grid, .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-name {
+                font-size: 1.3rem;
+            }
+            
+            .user-rank {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- تأثيرات الخلفية -->
+    <div class="background-effects">
+        <div class="grid-overlay"></div>
+    </div>
+    
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+        <div class="logo-ontainer">
+            <img src="https://i.postimg.cc/0QwwyJj3/image.png" width="100"; alt="شعار R.D.F" class="loo-img">
+            <!--div class="logo-text">R.D.F</div-->
+        </div>
+        
+        <div class="nav-icons">
+            <a href="#" class="nav-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </a>
+            <a href="#" class="nav-icon">
+                <i class="fas fa-cog"></i>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- تصميم يشبه تطبيق الجوال -->
+    <div class="app-container">
+        <!-- رأس الصفحة -->
+        <div class="user-header">
+            <img src="https://i.postimg.cc/0NzPDN2N/image.jpg" alt="صورة العضو" class="user-avatar">
+            <div class="user-info">
+                <div class="user-greeting">مرحباً بعودتك</div>
+                <div class="user-name">سيف علي الشوكي</div>
+                <div class="user-rank">ملك بلا مملكة</div>
+            </div>
+        </div>
+        
+        <!-- قسم الإحصائيات -->
+        <h2 class="section-title">إحصائيات النظام</h2>
+        <div class="stats-grid">
+            <div class="stat-card animate-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="stat-value">87%</div>
+                <div class="stat-label">مستوى الأمان</div>
+            </div>
+            
+            <div class="stat-card animate-card delay-1">
+                <div class="stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-value">24</div>
+                <div class="stat-label">عمليات نشطة</div>
+            </div>
+            
+            <div class="stat-card animate-card delay-2">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">48</div>
+                <div class="stat-label">الأعضاء النشطين</div>
+            </div>
+            
+            <div class="stat-card animate-card delay-3">
+                <div class="stat-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">حالة الخوادم</div>
+            </div>
+        </div>
+        
+        <!-- قسم الميزات -->
+        <h2 class="section-title">خدمات المنظمة</h2>
+        <div class="features-grid">
+            <div class="feature-card animate-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">الأمن السيبراني</h3>
+                <p class="feature-description">حماية الأنظمة والشبكات من الهجمات الإلكترونية</p>
+            </div>
+            
+            <div class="feature-card animate-card delay-1">
+                <div class="feature-icon">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <h3 class="feature-title">الاستخبارات</h3>
+                <p class="feature-description">جمع وتحليل المعلومات الاستخباراتية</p>
+            </div>
+            
+            <div class="feature-card animate-card delay-2">
+                <div class="feature-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3 class="feature-title">البحث والتطوير</h3>
+                <p class="feature-description">تطوير حلول مبتكرة وأسلحة متطورة</p>
+            </div>
+            
+            <div class="feature-card animate-card delay-3">
+                <div class="feature-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3 class="feature-title">العمليات العالمية</h3>
+                <p class="feature-description">تنفيذ عمليات سرية حول العالم</p>
+            </div>
+        </div>
+        
+        <!-- قسم الأعضاء -->
+        <h2 class="section-title">فريق القيادة</h2>
+        <div class="members-grid">
+            <div class="member-card animate-card">
+                <img src="https://i.postimg.cc/Nj2tcsZK/image.jpg" alt="عبود" class="member-image">
+                <h3 class="member-name">عبود</h3>
+                <div class="member-rank">ملك لامينالا</div>
+                <p class="member-skills">قائد فريق العمليات الخاصة</p>
+            </div>
+            
+            <div class="member-card animate-card delay-1">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="سيف" class="member-image">
+                <h3 class="member-name">سيف</h3>
+                <div class="member-rank">نائب القائد</div>
+                <p class="member-skills">خبير العمليات الميدانية</p>
+            </div>
+            
+            <div class="member-card animate-card delay-2">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="ليان" class="member-image">
+                <h3 class="member-name">ليان</h3>
+                <div class="member-rank">محللة استخبارات</div>
+                <p class="member-skills">تحليل البيانات والذكاء الاصطناعي</p>
+            </div>
+            
+            <div class="member-card animate-card delay-3">
+                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="رامي" class="member-image">
+                <h3 class="member-name">رامي</h3>
+                <div class="member-rank">خبير أسلحة</div>
+                <p class="member-skills">تكنولوجيا عسكرية وتطوير أسلحة</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>الأعضاء</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>التقارير</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>الإعدادات</span>
+        </a>
+    </div>
+</body>
+</html>
