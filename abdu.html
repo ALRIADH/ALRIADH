@@ -20,11 +20,11 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
   body { 
     margin: 0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     background: var(--dark-bg); 
     color: var(--text-color);
     height: 100vh;
@@ -227,7 +227,7 @@
   .message-input {
     flex: 1;
     padding: 14px 18px;
-    border-radius: 24px;
+    border-radius: 4px;
     border: 1px solid var(--border-color);
     background: var(--card-bg);
     color: var(--text-color);
@@ -243,7 +243,7 @@
   
   .send-button {
     padding: 14px 20px;
-    border-radius: 24px;
+    border-radius: 4px;
     border: none;
     background: var(--primary-color);
     color: white;
@@ -384,7 +384,7 @@
   <!-- الشريط العلوي -->
   <div class="topbar">
     <div class="topbar-left">
-      <a href="ccc.html" class="back-button">←</a>
+      <a href="ccc.html" class="back-button">❮</a>
       <div class="group-info">
         <img src="https://i.postimg.cc/3RpyGb6h/image.jpg" alt="صورة المجموعة" class="group-avatar">
         <div class="group-name">مجموعة المدرسين</div>
@@ -489,6 +489,47 @@ let roomId = 'main';
 const messagesRef = ref(db, `rooms/${roomId}/messages`);
 let currentMessageToDelete = null;
 
+// دالة لتحويل الأرقام العربية إلى إنجليزية
+function convertToEnglishNumbers(text) {
+  if (!text) return text;
+  
+  const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  
+  let convertedText = text;
+  for (let i = 0; i < 10; i++) {
+    const regex = new RegExp(arabicNumbers[i], 'g');
+    convertedText = convertedText.replace(regex, englishNumbers[i]);
+  }
+  
+  return convertedText;
+}
+
+// دالة لتنسيق التاريخ الميلادي بالإنجليزية
+function formatGregorianDate(date) {
+  if (!date) return '';
+  
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+  
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  };
+  
+  // استخدام locale 'en-US' للحصول على التاريخ الميلادي بالإنجليزية
+  let formattedDate = d.toLocaleString('en-US', options);
+  
+  // تحويل AM/PM إلى صيغة مناسبة
+  formattedDate = formattedDate.replace('AM', 'ص').replace('PM', 'م');
+  
+  return formattedDate;
+}
+
 function renderMessage(m, key) {
   const li = document.createElement('li');
   li.className = 'message';
@@ -514,10 +555,12 @@ function renderMessage(m, key) {
 
   const meta = document.createElement('div');
   meta.className = 'message-info';
-  meta.textContent = `${m.name} • ${new Date(m.ts).toLocaleString('ar-SA')}`;
+  
+  // استخدام التاريخ الميلادي بدلاً من الهجري
+  meta.textContent = `${convertToEnglishNumbers(m.name)} • ${formatGregorianDate(m.ts)}`;
 
   const text = document.createElement('div');
-  text.textContent = m.text;
+  text.textContent = convertToEnglishNumbers(m.text);
 
   bubble.appendChild(text);
   messageContent.appendChild(meta);
