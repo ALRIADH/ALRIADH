@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دردشة المدرسين</title>
+<style>
+  :root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --dark-bg: #0f172a;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --text-color: #e2e8f0;
+    --my-msg-bg: #2563eb;
+    --other-msg-bg: #334155;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: var(--dark-bg); 
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* الشريط العلوي */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    height: 70px;
+    flex-shrink: 0;
+  }
+  
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .back-button {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  
+  .back-button:hover {
+    background: rgba(37, 99, 235, 0.1);
+  }
+  
+  .group-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .group-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+  }
+  
+  .group-name {
+    font-weight: 600;
+    font-size: 18px;
+  }
+  
+  /* منطقة المحادثة */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 16px;
+    background: var(--dark-bg);
+  }
+  
+  .messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 0;
+    scroll-behavior: smooth;
+  }
+  
+  .messages-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .messages-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .messages-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+  }
+  
+  #messages {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* الرسائل */
+  .message {
+    display: flex;
+    gap: 10px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .my-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+  
+  .other-message {
+    align-self: flex-start;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    align-self: flex-end;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+  }
+  
+  .message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .my-message .message-content {
+    align-items: flex-end;
+  }
+  
+  .other-message .message-content {
+    align-items: flex-start;
+  }
+  
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 100%;
+    word-break: break-word;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  
+  .my-message .bubble {
+    background: var(--my-msg-bg);
+    color: white;
+    border-bottom-right-radius: 5px;
+  }
+  
+  .other-message .bubble {
+    background: var(--other-msg-bg);
+    color: var(--text-color);
+    border-bottom-left-radius: 5px;
+  }
+  
+  .bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .message-info {
+    font-size: 12px;
+    opacity: 0.8;
+    display: flex;
+    gap: 8px;
+    padding: 0 5px;
+  }
+  
+  /* نموذج الإرسال */
+  .message-form {
+    display: flex;
+    gap: 12px;
+    padding: 20px 0;
+    background: var(--dark-bg);
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+  
+  .message-input {
+    flex: 1;
+    padding: 14px 18px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .message-input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  .send-button {
+    padding: 14px 20px;
+    border-radius: 24px;
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .send-button:hover {
+    background: var(--secondary-color);
+  }
+  
+  /* النوافذ المنبثقة */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .modal {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    animation: modalFadeIn 0.3s ease;
+  }
+  
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  .modal h2 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+  }
+  
+  .modal p {
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  
+  .modal-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--dark-bg);
+    color: var(--text-color);
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+  }
+  
+  .modal-input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .modal-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .confirm-button {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  .cancel-button {
+    background: var(--other-msg-bg);
+    color: var(--text-color);
+  }
+  
+  /* نافذة التأكيد */
+  .confirm-modal .modal {
+    text-align: center;
+  }
+  
+  .confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .delete-button {
+    background: #ef4444;
+    color: white;
+  }
+  
+  /* رسالة التنبيه */
+  .alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 1001;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: alertFadeIn 0.3s ease;
+  }
+  
+  @keyframes alertFadeIn {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <!-- الشريط العلوي -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="ddd.html" class="back-button">←</a>
+      <div class="group-info">
+        <img src="https://i.postimg.cc/3RpyGb6h/image.jpg" alt="صورة المجموعة" class="group-avatar">
+        <div class="group-name">مجموعة المدرسين</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- منطقة المحادثة -->
+  <div class="chat-area">
+    <div class="messages-container" id="messagesContainer">
+      <ul id="messages"></ul>
+    </div>
+    
+    <form class="message-form" id="messageForm">
+      <input type="text" class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..." maxlength="1000" autocomplete="off">
+      <button type="submit" class="send-button">إرسال</button>
+    </form>
+  </div>
+</div>
+
+<!-- نافذة إدخال الاسم -->
+<div id="nameOverlay" class="overlay">
+  <div class="modal">
+    <h2>مرحباً بك 👋</h2>
+    <p>من فضلك أدخل اسمك للمشاركة في الدردشة. سيتم حفظ الاسم ولا يمكن تغييره لاحقاً.</p>
+    <input type="text" class="modal-input" id="firstNameInput" placeholder="اسمك الكامل" maxlength="20">
+    <div class="modal-buttons">
+      <button class="modal-button confirm-button" id="saveFirstNameBtn">بدء المحادثة</button>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة تأكيد الحذف -->
+<div id="deleteConfirmModal" class="overlay confirm-modal">
+  <div class="modal">
+    <h2>حذف الرسالة</h2>
+    <p>هل أنت متأكد من رغبتك في حذف هذه الرسالة؟</p>
+    <p>سيتم حذفها نهائياً ولن يتمكن الآخرون من رؤيتها.</p>
+    <div class="confirm-buttons">
+      <button class="modal-button delete-button" id="confirmDeleteYes">نعم، احذف</button>
+      <button class="modal-button cancel-button" id="confirmDeleteNo">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- رسالة التنبيه -->
+<div class="alert" id="alertMessage">سيتم حذف الرسالة ولن يتمكن الآخرون من رؤيتها</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, serverTimestamp, query, orderByChild, limitToLast, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD-ATbhT7UbESmsW_cSdVNqb7JhLobsTT4",
+  authDomain: "chat-4f717.firebaseapp.com",
+  databaseURL: "https://chat-4f717-default-rtdb.firebaseio.com",
+  projectId: "chat-4f717",
+  storageBucket: "chat-4f717.firebasestorage.app",
+  messagingSenderId: "1049833929365",
+  appId: "1:1049833929365:web:212eee0b364fb0ab11799c",
+  measurementId: "G-022MRFC60Z"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const messagesEl = document.getElementById('messages');
+const messagesContainer = document.getElementById('messagesContainer');
+const form = document.getElementById('messageForm');
+const input = document.getElementById('messageInput');
+const nameOverlay = document.getElementById('nameOverlay');
+const firstNameInput = document.getElementById('firstNameInput');
+const saveFirstBtn = document.getElementById('saveFirstNameBtn');
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+const confirmDeleteYes = document.getElementById('confirmDeleteYes');
+const confirmDeleteNo = document.getElementById('confirmDeleteNo');
+const alertMessage = document.getElementById('alertMessage');
+
+// clientId ثابت لكل مستخدم
+if(!localStorage.getItem('chatClientId')) {
+  localStorage.setItem('chatClientId', Math.random().toString(36).slice(2,12));
+}
+
+function avatarFromName(name) { 
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&bold=true&color=fff`; 
+}
+
+// التحقق من الاسم المخزن
+if(!localStorage.getItem('chatName')) { 
+  nameOverlay.style.display = 'flex'; 
+}
+
+saveFirstBtn.addEventListener('click', () => {
+  const name = firstNameInput.value.trim();
+  if(!name) return;
+  localStorage.setItem('chatName', name);
+  localStorage.setItem('chatAvatar', avatarFromName(name));
+  nameOverlay.style.display = 'none';
+});
+
+let roomId = 'main';
+const messagesRef = ref(db, `rooms/${roomId}/messages`);
+let currentMessageToDelete = null;
+
+function renderMessage(m, key) {
+  const li = document.createElement('li');
+  li.className = 'message';
+  
+  // تحديد إذا كانت الرسالة خاصة بالمستخدم الحالي
+  const isMyMessage = m.clientId === localStorage.getItem('chatClientId');
+  if (isMyMessage) {
+    li.classList.add('my-message');
+  } else {
+    li.classList.add('other-message');
+  }
+  
+  const img = document.createElement('img');
+  img.className = 'avatar';
+  img.src = m.avatar || 'https://i.pravatar.cc/40';
+
+  const messageContent = document.createElement('div');
+  messageContent.className = 'message-content';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.dataset.key = key;
+
+  const meta = document.createElement('div');
+  meta.className = 'message-info';
+  meta.textContent = `${m.name} • ${new Date(m.ts).toLocaleString('ar-SA')}`;
+
+  const text = document.createElement('div');
+  text.textContent = m.text;
+
+  bubble.appendChild(text);
+  messageContent.appendChild(meta);
+  messageContent.appendChild(bubble);
+  
+  li.appendChild(img);
+  li.appendChild(messageContent);
+  
+  messagesEl.appendChild(li);
+  
+  // التمرير إلى أحدث رسالة
+  messagesContainer.scrollTo({
+    top: messagesContainer.scrollHeight,
+    behavior: 'smooth'
+  });
+
+  // إضافة إمكانية الحذف للرسائل الخاصة بالمستخدم
+  if (isMyMessage) {
+    bubble.addEventListener('click', () => {
+      currentMessageToDelete = key;
+      deleteConfirmModal.style.display = 'flex';
+    });
+  }
+}
+
+// تأكيد الحذف
+confirmDeleteYes.addEventListener('click', () => {
+  if (currentMessageToDelete) {
+    remove(ref(db, `rooms/${roomId}/messages/${currentMessageToDelete}`));
+    
+    // إظهار رسالة التنبيه المؤقتة
+    alertMessage.style.display = 'block';
+    setTimeout(() => {
+      alertMessage.style.display = 'none';
+    }, 3000);
+  }
+  deleteConfirmModal.style.display = 'none';
+  currentMessageToDelete = null;
+});
+
+confirmDeleteNo.addEventListener('click', () => {
+  deleteConfirmModal.style.display = 'none';
+  currentMessageToDelete = null;
+});
+
+// جلب الرسائل وعرضها
+const messagesQuery = query(messagesRef, orderByChild('ts'), limitToLast(200));
+onChildAdded(messagesQuery, snapshot => renderMessage(snapshot.val(), snapshot.key));
+
+// إرسال رسالة جديدة
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if(!text) return;
+  
+  // التأكد من وجود اسم المستخدم
+  if (!localStorage.getItem('chatName')) {
+    nameOverlay.style.display = 'flex';
+    return;
+  }
+  
+  push(messagesRef, {
+    name: localStorage.getItem('chatName'),
+    text: text,
+    avatar: localStorage.getItem('chatAvatar'),
+    clientId: localStorage.getItem('chatClientId'),
+    ts: serverTimestamp()
+  });
+  
+  input.value = '';
+});
+
+// تمكين السحب للتمرير على الهواتف
+let touchStartY = 0;
+let touchEndY = 0;
+
+messagesContainer.addEventListener('touchstart', e => {
+  touchStartY = e.changedTouches[0].screenY;
+}, false);
+
+messagesContainer.addEventListener('touchend', e => {
+  touchEndY = e.changedTouches[0].screenY;
+  handleSwipe();
+}, false);
+
+function handleSwipe() {
+  // لا شيء خاص، فقط تمكين التمرير الطبيعي
+}
+</script>
+</body>
+</html>
