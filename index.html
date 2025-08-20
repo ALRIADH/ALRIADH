@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ᑎEXᑌS</title>
+    <title>R.D.F - نظام الدخول المتقدم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -35,7 +35,47 @@
         }
         
         /* تأثيرات الخلفية */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
         
+        /*.shape {*/
+            position: absolute;
+            border-radius: 80%;
+            background: radial-gradient(circle, rgba(0, 47, 85, 0.8), transparent);
+            filter: blur(20px);
+            opacity: 0.7;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 20%;
+            animation: float1 2s infinite alternate ease-in-out;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 70%;
+            animation: float2 12s infinite alternate ease-in-out;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            left: 50%;
+            animation: float3 10s infinite alternate ease-in-out;
+        }
         
         @keyframes float1 {
             0% { transform: translate(0, 0) rotate(0deg); }
@@ -53,8 +93,8 @@
         }
         
         /* تصميم لوحة الدخول */
-        .login-container {
-            background: rgba(15, 15, 25, 0.85);
+        /*.login-container {*/
+            backgound: rgba(15, 15, 25, 0.85);
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             padding: 2.5rem;
@@ -73,7 +113,7 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            /*background: linear-gradient(to right, var(--primary), var(--secondary));*/
         }
         
         .login-header {
@@ -296,18 +336,18 @@
         }
         
         .success-attempt {
-            color: var(--primary);
+            color: green;
             font-weight: bold;
         }
         
-        /* رسالة الترحيب */
+        /* رسالة الترحيب بعد الدخول - التصميم الجديد */
         .welcome-message {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.97);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -322,48 +362,178 @@
             text-align: center;
             max-width: 800px;
             padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nexus-logo {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 47, 85, 0.8), rgba(138, 0, 255, 0.6));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(0, 47, 85, 0.7), 0 0 80px rgba(138, 0, 255, 0.5);
+            animation: pulseLogo 3s infinite alternate;
+        }
+        
+        .nexus-logo::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+        }
+        
+        .nexus-logo i {
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(0, 47, 85, 0.9), 0 0 40px rgba(138, 0, 255, 0.7);
         }
         
         .welcome-title {
-            font-size: 4rem;
-            background: blue;
+            font-size: 3.5rem;
+            background: linear-gradient(to right, #00aaff, #00ffaa);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             margin-bottom: 1.5rem;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 3px;
             line-height: 1.2;
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
+            animation: glitch 1.5s infinite;
         }
         
         .welcome-subtitle {
             font-size: 1.8rem;
-            color: var(--text);
-            margin-bottom: 2rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
             font-weight: 300;
+            line-height: 1.6;
         }
         
         .member-name {
-            color: blue;
-            font-weight: 600;
-            font-size: 2.2rem;
-            margin: 1rem 0;
+            color: #00aaff;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin: 0rem 0;
             text-transform: uppercase;
             letter-spacing: 3px;
+            text-shadow: #00aaff;
+            animation: glow 2s infinite alternate;
         }
         
         .access-code {
-            font-size: 1.5rem;
-            letter-spacing: 8px;
+            font-size: 1.8rem;
+            letter-spacing: 10px;
             font-weight: 700;
-            color: var(--primary);
-            text-shadow: var(--glow);
+            color: #00aaff;
+            text-shadow: 0 0 20px rgba(0, 170, 255, 0.7);
             margin: 2rem 0;
             padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--primary);
+            background: rgba(0, 10, 20, 0.6);
+            border: 1px solid rgba(0, 170, 255, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 170, 255, 0.3);
+            animation: pulseBorder 3s infinite alternate;
+        }
+        
+        /* تأثيرات التحميل */
+        .loading-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0.5rem auto;
+            background: rgba(10, 15, 30, 0.7);
             border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 170, 255, 0.3);
+        }
+        
+        .loading-text {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #00aaff;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 55, 170, 0.5);
+        }
+        
+        .loading-bar {
+            height: 20px;
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 170, 255, 0.3);
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00aaff, #00ff);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading-progress::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: loadingShine 1.5s infinite;
+        }
+        
+        .loading-percentage {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #00aaff;
+            font-weight: 700;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            margin: 2rem auto;
+            position: relative;
+        }
+        
+        .spinner-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #00aaff;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .spinner-circle:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border-top-color: #aa11ff;
+            animation: spinReverse 2s linear infinite;
+        }
+        
+        .spinner-circle:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border-top-color: #00aaff;
+            animation: spin 2.5s linear infinite;
         }
         
         /* الرسوم المتحركة */
@@ -384,17 +554,73 @@
         }
         
         @keyframes glitch {
-            0% { text-shadow: 0 0 5px var(--primary); }
-            25% { text-shadow: 5px 0 5px var(--accent); }
-            50% { text-shadow: -5px 0 5px var(--secondary); }
-            100% { text-shadow: 0 0 5px var(--primary); }
+            0% { text-shadow: 0 0 5px var(--primary), 0 0 10px #00aaff; }
+            25% { text-shadow: 5px 0 5px #ff003c, 0 0 15px #00aaff; }
+            50% { text-shadow: -5px 0 5px #00ff, 0 0 20px #00aaff; }
+            100% { text-shadow: 0 0 5px var(--primary), 0 0 10px #00aaff; }
         }
         
-        .glitch-text {
-            animation: glitch 1s infinite;
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px rgba(0, 25, 170, 0.5); }
+            100% { text-shadow: 0 0 25px rgba(138, 0, 255, 0.7), 0 0 50px rgba(0, 25, 170, 0.4); }
+        }
+        
+        @keyframes pulseLogo {
+            0% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 47, 85, 0.7), 0 0 60px rgba(138, 0, 255, 0.5); }
+            100% { transform: scale(1.05); box-shadow: 0 0 60px rgba(0, 47, 85, 0.9), 0 0 80px rgba(138, 0, 255, 0.7); }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes loadingShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes spinReverse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+        
+        @keyframes pulseBorder {
+            0% { border-color: rgba(0, 170, 255, 0.5); box-shadow: 0 0 30px rgba(0, 170, 255, 0.3); }
+            100% { border-color: rgba(0, 25, 170, 0.7); box-shadow: 0 0 50px rgba(0, 25, 170, 0.5); }
         }
         
         /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+            
+            .member-name {
+                font-size: 2rem;
+            }
+            
+            .access-code {
+                font-size: 1.4rem;
+                letter-spacing: 5px;
+                padding: 1rem;
+            }
+            
+            .nexus-logo {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .nexus-logo i {
+                font-size: 4rem;
+            }
+        }
+        
         @media (max-width: 576px) {
             .login-container {
                 padding: 1.5rem;
@@ -410,11 +636,29 @@
             }
             
             .welcome-title {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
             .welcome-subtitle {
                 font-size: 1.3rem;
+            }
+            
+            .member-name {
+                font-size: 1.8rem;
+            }
+            
+            .access-code {
+                font-size: 1.2rem;
+                letter-spacing: 3px;
+            }
+            
+            .nexus-logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .nexus-logo i {
+                font-size: 3rem;
             }
         }
     </style>
@@ -428,9 +672,9 @@
     </div>
     
     <!-- لوحة تسجيل الدخول -->
-    <div clas="login-container">
+    <div class="login-container">
         <div class="login-header">
-            <div class="login-logo"> <img src="https://i.postimg.cc/rm34kd1f/image.png" with="1" height="50" top="50" alt="صورة المدرس"></div>
+            <div class="login-logo"> <img src="https://i.postimg.cc/rm34kd1f/image.png" with="1" height="50" top="50" alt="ᑎEXᑌS"></div>
             <h1 class="login-title">ᑎEXᑌS</h1>
             <p class="login-subtitle">تسجيل الدخول إلى نكسس</p>
         </div>
@@ -439,13 +683,13 @@
             <div class="input-group">
                 <label for="username">اسم المستخدم</label>
                 <input type="text" id="username" name="username" required>
-                <i clss="fas fa-user-secret"></i>
+                <!--i class="fas fa-user-secret"></i-->
             </div>
             
             <div class="input-group">
                 <label for="password">كلمة المرور</label>
                 <input type="password" id="password" name="password" required autocomplete="off">
-                <i clss="fas fa-lock"></i>
+                <!--i class="fas fa-lock"></i-->
             </div>
             
             <button type="submit" class="login-btn">تفعيل الدخول</button>
@@ -475,15 +719,31 @@
         </div>
     </div>
     
-    <!-- رسالة الترحيب بعد الدخول -->
+    <!-- رسالة الترحيب بعد الدخول - التصميم الجديد -->
     <div class="welcome-message" id="welcomeMessage">
         <div class="welcome-content">
-            <h1 class="welcome-title">تم التحقق بنجاح</h1>
+            <div class="nexus-logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <!--h1 class="welcome-title">تم التحقق بنجاح</h1-->
             <p class="welcome-subtitle">تمت المصادقة على هويتك بنجاح</p>
             <div class="member-name" id="memberName">اسم العضو</div>
             <p class="welcome-subtitle">مرحبًا بك في النظام الأساسي</p>
-            <div class="access-code">RDF-9-ALPHA-X</div>
-            <p class="welcome-subtitle">جاري تحويلك إلى منطقة العمليات...</p>
+            <!--div class="access-code">RDF-9-ALPHA-X</div-->
+            
+            <!-- تأثير التحميل الجديد -->
+            <div class="loaing-container">
+                <div class="loading-text">جاري تحويلك إلى منطقة العمليات...</div>
+                <div class="loading-bar">
+                    <div class="loading-progress" id="loadingProgress"></div>
+                </div>
+                <div class="loading-percentage" id="loadingPercentage">0%</div>
+                <div class="loading-spinner">
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-circle"></div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -494,7 +754,7 @@
             { username: "phantom", password: "ghost123", name: "الفانتوم", page: "bbb.html" },
             { username: "dark_knight", password: "bat2023", name: "الفارس المظلم", page: "ccc.html" },
             { username: "silent_wolf", password: "forest88", name: "الذئب الصامت", page: "ddd.html" },
-            { username: "عبود", password: "111", name: "ملك لامينالا", page: "eee.html" }
+            { username: "ملك بلا مملكة", password: "sifx77", name: "سيف علي عبدة الشوكي", page: "sif.html" }
         ];
         
         // كلمات مرور عشوائية للتأثير
@@ -517,6 +777,8 @@
         const remainingAttempts = document.getElementById('remainingAttempts');
         const blockedMessage = document.getElementById('blockedMessage');
         const timer = document.getElementById('timer');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingPercentage = document.getElementById('loadingPercentage');
         
         // تهيئة المحاولات
         const MAX_ATTEMPTS = 3;
@@ -817,22 +1079,33 @@
             timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
         
-        // عرض رسالة النجاح
+        // عرض رسالة النجاح مع تأثير التحميل الجديد
         function showSuccessMessage(name, page) {
             memberName.textContent = name;
             welcomeMessage.style.opacity = '1';
             welcomeMessage.style.pointerEvents = 'auto';
             
-            // الانتقال إلى الصفحة بعد التأخير
-            setTimeout(() => {
-                window.location.href = page;
-                // إعادة تعيين المحاولات عند نجاح الدخول
-                attempts = MAX_ATTEMPTS;
-                localStorage.removeItem('remainingAttempts_' + userFingerprint);
-            }, 5000);
+            // بدء تأثير التحميل
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                loadingProgress.style.width = `${progress}%`;
+                loadingPercentage.textContent = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    // الانتقال إلى الصفحة بعد التأخير
+                    setTimeout(() => {
+                        window.location.href = page;
+                        // إعادة تعيين المحاولات عند نجاح الدخول
+                        attempts = MAX_ATTEMPTS;
+                        localStorage.removeItem('remainingAttempts_' + userFingerprint);
+                    }, 500);
+                }
+            }, 50);
         }
         
-        // تأثيرات عشوائية لزيادة الرعب
+        // تأثيرات عشوائية لزيارة الرعب
         setInterval(() => {
             const hackingHeader = document.querySelector('.hacking-header h2');
             if (hackingHeader && hackingSection.style.display === 'block') {
