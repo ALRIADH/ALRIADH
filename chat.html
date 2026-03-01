@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>R.D.F - الدردشة</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* إخفاء اللون الأزرق عند الضغط على العناصر */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* متغيرات الألوان بنفس استايل الملف الشخصي */
+    :root {
+        --main-bg: #050508;
+        --accent: #00d2ff;
+        --accent-glow: rgba(0, 210, 255, 0.3);
+        --glass: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --text-main: #ffffff;
+        --text-dim: #a0a0a0;
+        --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        --my-msg-bg: rgba(0, 210, 255, 0.1); /* رسائلي بخلفية زرقاوية شفافة */
+        --other-msg-bg: rgba(255, 255, 255, 0.03); /* رسائل الآخرين زجاجية */
+        --border-color: rgba(255, 255, 255, 0.08);
+        --card-bg: rgba(255, 255, 255, 0.02);
+        --primary: #00d2ff;
+        --reply-bg: rgba(0, 210, 255, 0.1);
+        --reply-border: #00d2ff;
+    }
+
+    body {
+        background: var(--main-bg);
+        color: var(--text-main);
+        line-height: 1.6;
+        padding-top: 0;
+        background-image: radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05) 0%, transparent 20%),
+                          radial-gradient(circle at 90% 80%, rgba(58, 123, 213, 0.05) 0%, transparent 20%);
+    }
+
+    .bg-glow {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        background: var(--accent);
+        filter: blur(120px);
+        border-radius: 50%;
+        opacity: 0.1;
+        z-index: -1;
+        animation: moveGlow 15s infinite alternate;
+    }
+
+    @keyframes moveGlow {
+        0% { top: 10%; left: 10%; }
+        100% { top: 80%; left: 80%; }
+    }
+
+    a, button, .nav-item, .active-members-btn, .bubble, .reply-container, 
+    .send-button, .back-button, .modal-button, .reply-preview-cancel {
+        transition: all 0.2s ease;
+    }
+
+    a:active, button:active, .nav-item:active, .active-members-btn:active, 
+    .bubble:active, .reply-container:active, .send-button:active, 
+    .back-button:active, .modal-button:active, .reply-preview-cancel:active {
+        transform: scale(0.98);
+    }
+
+    .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* ========== الشريط العلوي ========== */
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px 16px;
+        background: var(--glass);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid var(--glass-border);
+        height: 65px;
+        flex-shrink: 0;
+    }
+
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .back-button {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: none;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .back-button:hover {
+        background: #262626;
+    }
+
+    .group-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .group-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent);
+        box-shaow: 0 0 15px var(--accent-glow);
+    }
+
+    .group-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--text-main);
+    }
+
+    .active-members-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        color: var(--accent);
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 13px;
+        border: 1px solid var(--glass-border);
+        transition: 0.3s;
+    }
+
+    .active-members-btn:hover {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px var(--accent-glow);
+        border-color: var(--accent);
+    }
+
+    /* ========== منطقة الدردشة ========== */
+    .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: transparent;
+    }
+
+    .messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 16px;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .messages-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    #messages {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* ========== فاصل التاريخ ========== */
+    .date-separator {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0 5px 0;
+        position: relative;
+    }
+    .date-separator span {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        padding: 5px 15px;
+        border-radius: 100px;
+        font-size: 12px;
+        color: var(--accent);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        font-weight: 500;
+    }
+
+    /* ========== الرسائل ========== */
+    .message {
+        display: flex;
+        gap: 10px;
+        max-width: 85%;
+        animation: fadeIn 0.3s;
+        align-items: flex-start;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .my-message {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .other-message {
+        align-self: flex-start;
+    }
+
+    .avatar-container {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent);
+        box-shadow: 0 0 10px var(--accent-glow);
+        background-color: var(--glass);
+    }
+
+    .avatar-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: rgba(5, 5, 8, 0.6);
+        backdrop-filter: blur(2px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+    }
+
+    .avatar-loading::after {
+        content: "";
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(0, 210, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--accent);
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .messages-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        color: var(--accent);
+        flex-direction: column;
+        gap: 15px;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        margin: 20px auto;
+        width: fit-content;
+        border: 1px solid var(--glass-border);
+    }
+
+    .messages-loading .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(0, 210, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--accent);
+        animation: spin 1s linear infinite;
+    }
+
+    .bubble {
+        position: relative;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        max-width: 100%;
+        word-break: break-word;
+        line-height: 1.5;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        min-width: 60px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+    }
+
+    .my-message .bubble {
+        background: var(--my-msg-bg);
+        color: white;
+        border: 1px solid var(--accent);
+        box-shadow: none;
+    }
+
+    .other-message .bubble {
+        background: var(--glass);
+        color: var(--text-main);
+        border: 1px solid var(--glass-border);
+    }
+
+    .bubble .message-time {
+        font-size: 10px;
+        color: var(--text-dim);
+        margin-top: 4px;
+        text-align: left;
+        direction: ltr;
+        unicode-bidi: embed;
+        letter-spacing: 0.3px;
+    }
+
+    .bubble.double-tap-effect {
+        animation: doubleTap 0.5s ease;
+    }
+
+    @keyframes doubleTap {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); background-color: rgba(255, 0, 0, 0.15); }
+        100% { transform: scale(1); }
+    }
+
+    .reply-container {
+        background: rgba(0, 210, 255, 0.1);
+        border-right: 3px solid var(--reply-border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        margin-bottom: 6px;
+        max-width: 100%;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .reply-container:hover {
+        background: rgba(0, 210, 255, 0.2);
+    }
+
+    .reply-sender {
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 2px;
+        font-size: 11px;
+    }
+
+    .reply-text {
+        color: var(--text-dim);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 11px;
+    }
+
+    .message-info {
+        font-size: 11px;
+        color: var(--text-dim);
+        padding: 0 4px;
+        margin-bottom: 2px;
+    }
+
+    .message-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 15px 20px;
+        background: var(--glass);
+        backdrop-filter: blur(15px);
+        border-top: 1px solid var(--glass-border);
+        position: relative;
+        z-index: 10;
+        flex-shrink: 0;
+    }
+
+    .message-input {
+        flex: 1;
+        padding: 14px 20px;
+        border-radius: 50px;
+        border: 1px solid var(--glass-border);
+        background: rgba(5, 5, 8, 0.6);
+        backdrop-filter: blur(10px);
+        color: var(--text-main);
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .message-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 1px var(--accent-glow);
+    }
+
+    .send-button {
+        padding: 12px;
+        border-radius: 50%;
+        border: 1px solid var(--glass-border);
+        background: var(--glass);
+        color: var(--accent);
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        transition: 0.3s;
+    }
+
+    .send-button:hover {
+        background: #005379;
+        color: white;
+        border-color: var(--accent);
+        transform: scale(1.05);
+    }
+
+    .reply-preview {
+        background: rgba(0, 210, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-right: 3px solid var(--reply-border);
+        padding: 8px 15px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--glass-border);
+    }
+
+    .reply-preview-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .reply-preview-sender {
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .reply-preview-text {
+        color: var(--text-dim);
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 250px;
+    }
+
+    .reply-preview-cancel {
+        background: none;
+        border: 1px solid var(--glass-border);
+        color: var(--text-dim);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 12px;
+        transition: 0.3s;
+    }
+
+    .reply-preview-cancel:hover {
+        background: rgba(255, 0, 0, 0.2);
+        color: #ff4d4d;
+        border-color: #ff4d4d;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(5, 5, 8, 0.8);
+        backdrop-filter: blur(10px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .modal {
+        background: var(--glass);
+        backdrop-filter: blur(15px);
+        padding: 25px;
+        border-radius: 24px;
+        width: 350px;
+        max-width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease;
+        border: 1px solid var(--glass-border);
+    }
+
+    .modal h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .modal p {
+        font-size: 14px;
+        margin-bottom: 20px;
+        color: var(--text-dim);
+    }
+
+    .modal-input {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 50px;
+        border: 1px solid var(--glass-border);
+        background: rgba(5, 5, 8, 0.6);
+        color: var(--text-main);
+        font-size: 16px;
+        margin-bottom: 20px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .modal-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .modal-button {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 14px;
+        background: var(--glass);
+        color: var(--text-main);
+        transition: 0.3s;
+        font-weight: 600;
+    }
+
+    .confirm-button {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    .confirm-button:hover {
+        box-shadow: 0 0 20px var(--accent-glow);
+        transform: scale(1.02);
+    }
+
+    .delete-button {
+        background: rgba(255, 77, 77, 0.2);
+        color: #ff4d4d;
+        border-color: #ff4d4d;
+    }
+
+    .delete-button:hover {
+        background: #ff4d4d;
+        color: white;
+        box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+    }
+
+    .cancel-button {
+        background: var(--glass);
+        color: var(--text-dim);
+    }
+
+    .cancel-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .alert {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--gradient);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-size: 14px;
+        display: none;
+        z-index: 10000;
+        animation: slideUp 0.4s forwards;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    @keyframes slideUp {
+        from { bottom: -50px; opacity: 0; }
+        to { bottom: 30px; opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+        .logo-text { font-size: 1rem; }
+        .group-name { font-size: 16px; }
+        .active-members-btn span { display: none; }
+        .message { max-width: 90%; }
+        .bubble { max-width: 100%; padding: 8px 12px; font-size: 13px; }
+        .avatar { width: 35px; height: 35px; }
+        .avatar-container { width: 35px; height: 35px; }
+    }
+
+    @media (max-width: 480px) {
+        .message { max-width: 95%; }
+        .message-form { padding: 12px; }
+        .message-input { padding: 12px 16px; font-size: 14px; }
+        .send-button { width: 45px; height: 45px; }
+        .bubble { padding: 6px 10px; font-size: 12px; }
+        .bubble .message-time { font-size: 9px; }
+        .avatar { width: 32px; height: 32px; }
+        .avatar-container { width: 32px; height: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="app-container">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="https://alriadh.github.io/ALRIADH1/X-MA-A/Mesx.CH1x.html" target="_blank" class="back-button"><i class="fas fa-chevron-right"></i></a>
+        <div class="group-info">
+          <img src="https://i.postimg.cc/900j7N56/20251030-000514.jpg" class="group-avatar">
+          <div class="group-name">أخوة تحت عرش الرحمن</div>
+        </div>
+        <a href="https://alriadh.github.io/ALRIADH1/X-MA-A/Mesx.ACTx.html" target="_blank" class="active-members-btn"><i class="fas fa-users"></i><span> المتصلين</span></a>
+      </div>
+    </div>
+
+    <div class="chat-area">
+      <div class="messages-container" id="messagesContainer">
+        <div class="messages-loading" id="messagesLoading">
+          <div class="spinner"></div>
+          <div>جاري تحميل الرسائل...</div>
+        </div>
+        <ul id="messages"></ul>
+      </div>
+
+      <form class="message-form" id="messageForm">
+        <div class="reply-preview" id="replyPreview" style="display:none;">
+          <div class="reply-preview-content">
+            <div class="reply-preview-sender" id="replySender"></div>
+            <div class="reply-preview-text" id="replyText"></div>
+          </div>
+          <button type="button" class="reply-preview-cancel" id="cancelReply">✕</button>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="text" class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..." maxlength="1000" autocomplete="off">
+          <button type="submit" class="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="nameOverlay" class="overlay">
+    <div class="modal">
+      <h2>مرحباً 👋</h2>
+      <p>أدخل اسمك للمشاركة في الدردشة. سيتم حفظ الاسم ولا يمكن تغييره لاحقاً.</p>
+      <input type="text" class="modal-input" id="firstNameInput" placeholder="اسمك" maxlength="20">
+      <div class="modal-buttons">
+        <button class="modal-button confirm-button" id="saveFirstNameBtn">بدء المحادثة</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteConfirmModal" class="overlay confirm-modal">
+    <div class="modal">
+      <h2>حذف الرسالة</h2>
+      <p>هل أنت متأكد من رغبتك في حذف هذه الرسالة؟</p>
+      <div class="confirm-buttons" style="display:flex; gap:10px;">
+        <button class="modal-button delete-button" id="confirmDeleteYes">نعم، احذف</button>
+        <button class="modal-button cancel-button" id="confirmDeleteNo">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert" id="alertMessage">تم حذف الرسالة</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getDatabase, ref, push, onChildAdded, onChildRemoved,
+      serverTimestamp, query, orderByChild, limitToLast,
+      remove, get, update
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+    const chatConfig = {
+      apiKey: "AIzaSyD-ATbhT7UbESmsW_cSdVNqb7JhLobsTT4",
+      authDomain: "chat-4f717.firebaseapp.com",
+      databaseURL: "https://chat-4f717-default-rtdb.firebaseio.com",
+      projectId: "chat-4f717",
+      storageBucket: "chat-4f717.firebasestorage.app",
+      messagingSenderId: "1049833929365",
+      appId: "1:1049833929365:web:212eee0b364fb0ab11799c",
+      measurementId: "G-022MRFC60Z"
+    };
+    const chatApp = initializeApp(chatConfig, "chatApp");
+    const db = getDatabase(chatApp);
+
+    const activeConfig = {
+      apiKey: "AIzaSyBkdgdvqCMDazd_lVDjk3AxBQv_NuoT2CY",
+      authDomain: "activeusersproject.firebaseapp.com",
+      databaseURL: "https://activeusersproject-default-rtdb.firebaseio.com",
+      projectId: "activeusersproject",
+      storageBucket: "activeusersproject.firebasestorage.app",
+      messagingSenderId: "1758034379682",
+      appId: "1:578197913531:web:74f4b5c2b7d0f429424e9e",
+      measurementId: "G-TSP2J3ERRZ"
+    };
+    const activeApp = initializeApp(activeConfig, "activeApp");
+    const activeDB = getDatabase(activeApp);
+
+    const messagesEl = document.getElementById('messages');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messagesLoading = document.getElementById('messagesLoading');
+    const form = document.getElementById('messageForm');
+    const input = document.getElementById('messageInput');
+    const nameOverlay = document.getElementById('nameOverlay');
+    const firstNameInput = document.getElementById('firstNameInput');
+    const saveFirstBtn = document.getElementById('saveFirstNameBtn');
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const confirmDeleteYes = document.getElementById('confirmDeleteYes');
+    const confirmDeleteNo = document.getElementById('confirmDeleteNo');
+    const alertMessage = document.getElementById('alertMessage');
+    const replyPreview = document.getElementById('replyPreview');
+    const replySender = document.getElementById('replySender');
+    const replyText = document.getElementById('replyText');
+    const cancelReplyBtn = document.getElementById('cancelReply');
+
+    let lastTap = 0;
+    let currentMessageKey = null;
+    let messagesLoaded = false;
+    // مصفوفة لتخزين جميع الرسائل مرتبة
+    let messagesArray = [];
+
+    if(!localStorage.getItem('chatClientId')) {
+      localStorage.setItem('chatClientId', Math.random().toString(36).slice(2,12));
+    }
+    const clientId = localStorage.getItem('chatClientId');
+
+    function avatarFromName(name){
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&bold=true&color=fff`;
+    }
+
+    if(!localStorage.getItem('chatName')){
+      nameOverlay.style.display = 'flex';
+    } else {
+      const userRef = ref(db, `users/${clientId}`);
+      get(userRef).then(snapshot=>{
+        if(!snapshot.exists()){
+          update(userRef, { name: localStorage.getItem('chatName'), avatar: localStorage.getItem('chatAvatar') || avatarFromName(localStorage.getItem('chatName')) });
+        }
+      }).catch(err => console.warn('user check err', err));
+    }
+
+    saveFirstBtn.addEventListener('click', ()=>{
+      const name = firstNameInput.value.trim();
+      if(!name) return;
+      const avatar = avatarFromName(name);
+      localStorage.setItem('chatName', name);
+      localStorage.setItem('chatAvatar', avatar);
+      nameOverlay.style.display = 'none';
+      const userRef = ref(db, `users/${clientId}`);
+      update(userRef, { name, avatar }).catch(err => console.error('save user err', err));
+    });
+
+    let roomId = 'main';
+    const messagesRef = ref(db, `rooms/${roomId}/messages`);
+    let currentMessageToDelete = null;
+    let replyingToMessage = null;
+
+    function convertToEnglishNumbers(text) {
+      if (!text) return text;
+      const arabic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+      const eng = ['0','1','2','3','4','5','6','7','8','9'];
+      let out = text + '';
+      for(let i=0;i<10;i++) out = out.replace(new RegExp(arabic[i],'g'), eng[i]);
+      return out;
+    }
+
+    // دالة تنسيق الوقت للعرض داخل الفقاعة (ساعة:دقيقة)
+    function formatMessageTime(value){
+      if(!value) return '';
+      const d = new Date(value);
+      if(isNaN(d.getTime())) return '';
+      return d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('ص', 'ص').replace('م', 'م');
+    }
+
+    // دالة الحصول على نص فاصل التاريخ (مثل "اليوم"، "أمس"، "15 فبراير 2025")
+    function getDateLabel(timestamp) {
+      if (!timestamp) return '';
+      const msgDate = new Date(timestamp);
+      const today = new Date();
+      
+      // ضبط الساعات إلى 00:00 لمقارنة الأيام فقط
+      const msgDay = new Date(msgDate.getFullYear(), msgDate.getMonth(), msgDate.getDate());
+      const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      
+      const diffTime = todayDay - msgDay;
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      
+      if (diffDays === 0) return 'اليوم';
+      if (diffDays === 1) return 'أمس';
+      // إذا كان ضمن الأسبوع يمكن إضافة "هذا الأسبوع" لكن نكتفي بالتاريخ الكامل
+      return msgDate.toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function scrollToMessage(messageKey) {
+      const targetBubble = document.querySelector(`.bubble[data-key="${messageKey}"]`);
+      if (targetBubble) {
+        targetBubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetBubble.style.backgroundColor = 'rgba(0, 210, 255, 0.3)';
+        setTimeout(() => {
+          targetBubble.style.backgroundColor = '';
+        }, 1500);
+      }
+    }
+
+    function handleDoubleTap(messageKey, bubble) {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (lastTap && currentMessageKey === messageKey && tapLength < 500) {
+        bubble.classList.add('double-tap-effect');
+        currentMessageToDelete = messageKey;
+        deleteConfirmModal.style.display = 'flex';
+        lastTap = 0;
+        currentMessageKey = null;
+      } else {
+        lastTap = currentTime;
+        currentMessageKey = messageKey;
+        setTimeout(() => {
+          lastTap = 0;
+          currentMessageKey = null;
+        }, 500);
+      }
+    }
+
+    function setupSwipeToReply(){
+      let startX=0, startY=0, currentBubble=null, isSwiping=false;
+      document.addEventListener('touchstart', e=>{
+        const b = e.target.closest('.bubble');
+        if(b){ currentBubble = b; startX = e.touches[0].clientX; startY = e.touches[0].clientY; isSwiping = true; }
+      });
+      document.addEventListener('touchmove', e=>{
+        if(!isSwiping || !currentBubble) return;
+        const cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+        const diffX = startX - cx, diffY = startY - cy;
+        if(Math.abs(diffY) > Math.abs(diffX)) return;
+        if(diffX < -50){
+          e.preventDefault();
+          const messageKey = currentBubble.dataset.key;
+          const messageText = currentBubble.querySelector('.message-text')?.textContent || '';
+          const messageSender = currentBubble.closest('.message')?.querySelector('.message-info')?.textContent?.split('•')[0]?.trim() || '';
+          showReplyPreview(messageSender, messageText, messageKey);
+          isSwiping=false; currentBubble=null;
+        }
+      });
+      document.addEventListener('touchend', ()=>{ isSwiping=false; currentBubble=null; });
+
+      document.addEventListener('mousedown', e=>{
+        const b = e.target.closest('.bubble');
+        if(b){ currentBubble = b; startX = e.clientX; startY = e.clientY; isSwiping=true; }
+      });
+      document.addEventListener('mousemove', e=>{
+        if(!isSwiping || !currentBubble) return;
+        const cx = e.clientX, cy = e.clientY;
+        const diffX = startX - cx, diffY = startY - cy;
+        if(Math.abs(diffY) > Math.abs(diffX)) return;
+        if(diffX < -100){
+          const messageKey = currentBubble.dataset.key;
+          const messageText = currentBubble.querySelector('.message-text')?.textContent || '';
+          const messageSender = currentBubble.closest('.message')?.querySelector('.message-info')?.textContent?.split('•')[0]?.trim() || '';
+          showReplyPreview(messageSender, messageText, messageKey);
+          isSwiping=false; currentBubble=null;
+        }
+      });
+      document.addEventListener('mouseup', ()=>{ isSwiping=false; currentBubble=null; });
+    }
+
+    function showReplyPreview(sender, text, messageKey){
+      replySender.textContent = sender || 'رد';
+      let displayText = text || '';
+      const maxLength = 50;
+      if(displayText.length > maxLength) displayText = displayText.substring(0, maxLength) + '...';
+      replyText.textContent = displayText;
+      replyPreview.style.display = 'flex';
+      replyingToMessage = messageKey;
+      input.focus();
+    }
+
+    function cancelReply(){
+      replyPreview.style.display = 'none';
+      replyingToMessage = null;
+    }
+
+    cancelReplyBtn.addEventListener('click', cancelReply);
+
+    // ========== دالة إنشاء عنصر رسالة (داخل الفقاعة) ==========
+    function createMessageElement(m, key) {
+      const li = document.createElement('li');
+      li.className = 'message';
+      const isMy = m.clientId === clientId;
+      li.classList.add(isMy ? 'my-message' : 'other-message');
+
+      const avatarContainer = document.createElement('div');
+      avatarContainer.className = 'avatar-container';
+
+      const img = document.createElement('img');
+      img.className = 'avatar';
+      img.src = m.avatar || 'https://i.pravatar.cc/40';
+
+      const avatarLoading = document.createElement('div');
+      avatarLoading.className = 'avatar-loading';
+
+      avatarContainer.appendChild(img);
+      avatarContainer.appendChild(avatarLoading);
+
+      img.onload = function() { avatarLoading.style.display = 'none'; };
+      img.onerror = function() {
+        avatarLoading.style.display = 'none';
+        this.src = 'https://i.pravatar.cc/40';
+      };
+
+      const messageContent = document.createElement('div');
+      messageContent.className = 'message-content';
+
+      const meta = document.createElement('div');
+      meta.className = 'message-info';
+      meta.textContent = convertToEnglishNumbers(m.name || 'مجهول');
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.dataset.key = key;
+      bubble.dataset.clientId = m.clientId || '';
+
+      if(m.replyTo && m.replyText){
+        const replyContainer = document.createElement('div');
+        replyContainer.className = 'reply-container';
+        replyContainer.dataset.replyTo = m.replyTo;
+        replyContainer.addEventListener('click', () => { scrollToMessage(m.replyTo); });
+
+        let originalSenderName = 'مجهول';
+        if(m.replyTo){
+          const replyMsgEl = document.querySelector(`.bubble[data-key="${m.replyTo}"]`);
+          if(replyMsgEl){
+            const msgElement = replyMsgEl.closest('.message');
+            const infoText = msgElement.querySelector('.message-info')?.textContent?.split('•')[0]?.trim() || '';
+            originalSenderName = infoText || 'مستخدم';
+          }
+        }
+
+        const replySenderEl = document.createElement('div');
+        replySenderEl.className = 'reply-sender';
+        replySenderEl.textContent = originalSenderName;
+
+        const replyTextEl = document.createElement('div');
+        replyTextEl.className = 'reply-text';
+        let replyDisplayText = m.replyText || '';
+        const replyMaxLength = 60;
+        if(replyDisplayText.length > replyMaxLength) replyDisplayText = replyDisplayText.substring(0, replyMaxLength) + '...';
+        replyTextEl.textContent = replyDisplayText;
+
+        replyContainer.appendChild(replySenderEl);
+        replyContainer.appendChild(replyTextEl);
+        bubble.appendChild(replyContainer);
+      }
+
+      const text = document.createElement('div');
+      text.className = 'message-text';
+      text.textContent = convertToEnglishNumbers(m.text || '');
+      bubble.appendChild(text);
+
+      const timeEl = document.createElement('div');
+      timeEl.className = 'message-time';
+      timeEl.textContent = formatMessageTime(m.ts);
+      bubble.appendChild(timeEl);
+
+      messageContent.appendChild(meta);
+      messageContent.appendChild(bubble);
+
+      li.appendChild(avatarContainer);
+      li.appendChild(messageContent);
+
+      if(isMy){
+        bubble.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          handleDoubleTap(key, bubble);
+        });
+      }
+      return li;
+    }
+
+    // ========== دالة إعادة رسم القائمة بالكامل مع فواصل التاريخ ==========
+    function renderAllMessages() {
+      // إخفاء شاشة التحميل إذا كانت ظاهرة
+      if (messagesLoading.style.display !== 'none') {
+        messagesLoading.style.display = 'none';
+        messagesLoaded = true;
+      }
+
+      // مسح القائمة
+      messagesEl.innerHTML = '';
+
+      if (messagesArray.length === 0) return;
+
+      // فرز المصفوفة حسب ts (تصاعدياً)
+      messagesArray.sort((a, b) => {
+        const ta = a.ts ? (typeof a.ts === 'object' ? Date.now() : a.ts) : 0;
+        const tb = b.ts ? (typeof b.ts === 'object' ? Date.now() : b.ts) : 0;
+        return ta - tb;
+      });
+
+      let lastDate = null;
+      for (let i = 0; i < messagesArray.length; i++) {
+        const msg = messagesArray[i];
+        const msgDate = msg.ts ? new Date(msg.ts) : null;
+        
+        if (msgDate && !isNaN(msgDate.getTime())) {
+          const dateOnly = new Date(msgDate.getFullYear(), msgDate.getMonth(), msgDate.getDate()).getTime();
+          // إذا اختلف التاريخ عن السابق، أضف فاصل
+          if (lastDate === null || dateOnly !== lastDate) {
+            const separatorLi = document.createElement('li');
+            separatorLi.className = 'date-separator';
+            const span = document.createElement('span');
+            span.textContent = getDateLabel(msg.ts);
+            separatorLi.appendChild(span);
+            messagesEl.appendChild(separatorLi);
+            lastDate = dateOnly;
+          }
+        } else {
+          // إذا لم يوجد تاريخ نضع فاصل افتراضي (نادر)
+          if (lastDate === null) {
+            const separatorLi = document.createElement('li');
+            separatorLi.className = 'date-separator';
+            const span = document.createElement('span');
+            span.textContent = 'رسالة جديدة';
+            separatorLi.appendChild(span);
+            messagesEl.appendChild(separatorLi);
+            lastDate = 'dummy';
+          }
+        }
+
+        const msgEl = createMessageElement(msg, msg.key);
+        messagesEl.appendChild(msgEl);
+      }
+
+      // التمرير للأسفل
+      messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+    }
+
+    // تعديل onChildAdded: نضيف الرسالة إلى المصفوفة ثم نعيد الرسم
+    const messagesQuery = query(messagesRef, orderByChild('ts'), limitToLast(200));
+    onChildAdded(messagesQuery, async snapshot => {
+      const msg = snapshot.val();
+      const key = snapshot.key;
+      if (!msg) return;
+
+      // جلب بيانات المستخدم إذا لزم الأمر
+      try {
+        const userSnap = await get(ref(db, `users/${msg.clientId}`));
+        const userData = userSnap.exists() ? userSnap.val() : { name: msg.name || 'مجهول', avatar: msg.avatar };
+        msg.name = userData.name || msg.name || 'مجهول';
+        msg.avatar = userData.avatar || msg.avatar || '';
+      } catch(err) { console.warn('user fetch err', err); }
+
+      // إضافة المفتاح للرسالة لاستخدامه لاحقاً
+      msg.key = key;
+
+      // التحقق من عدم وجود الرسالة مسبقاً (في حالة التحديث)
+      const exists = messagesArray.some(m => m.key === key);
+      if (!exists) {
+        messagesArray.push(msg);
+      }
+
+      renderAllMessages();
+    });
+
+    // عند حذف رسالة
+    onChildRemoved(messagesRef, snapshot => {
+      const key = snapshot.key;
+      messagesArray = messagesArray.filter(m => m.key !== key);
+      renderAllMessages();
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      if (!localStorage.getItem('chatName')) { nameOverlay.style.display = 'flex'; return; }
+      const messageData = {
+        text,
+        clientId,
+        name: localStorage.getItem('chatName'),
+        avatar: localStorage.getItem('chatAvatar'),
+        ts: serverTimestamp()
+      };
+      if (replyingToMessage) {
+        messageData.replyTo = replyingToMessage;
+        const replyMsg = messagesArray.find(m => m.key === replyingToMessage);
+        if (replyMsg) {
+          const rt = replyMsg.text || '';
+          const replyMaxLength = 100;
+          messageData.replyText = rt.length > replyMaxLength ? rt.substring(0, replyMaxLength) + '...' : rt;
+        }
+      }
+      push(messagesRef, messageData).catch(err => console.error('push err', err));
+      input.value = '';
+      cancelReply();
+    });
+
+    confirmDeleteYes.addEventListener('click', () => {
+      if (currentMessageToDelete) {
+        remove(ref(db, `rooms/${roomId}/messages/${currentMessageToDelete}`))
+          .then(() => { alertMessage.style.display = 'block'; setTimeout(() => { alertMessage.style.display = 'none'; }, 2500); })
+          .catch(err => console.error('remove err', err));
+      }
+      deleteConfirmModal.style.display = 'none';
+      currentMessageToDelete = null;
+    });
+    confirmDeleteNo.addEventListener('click', () => {
+      deleteConfirmModal.style.display = 'none';
+      currentMessageToDelete = null;
+    });
+
+    function updateActivity() {
+      update(ref(activeDB, 'activeUsersTest/' + encodeURIComponent(activeUsername)), {
+        name: activeName,
+        avatar: activeAvatar,
+        lastActive: Date.now()
+      }).catch(err => console.warn('active update err', err));
+    }
+    updateActivity();
+    setInterval(updateActivity, 10000);
+
+    setTimeout(() => { setupSwipeToReply(); }, 700);
+
+    // إذا لم تصل أي رسالة بعد 3 ثوانٍ نخفي شاشة التحميل
+    setTimeout(() => {
+      if (!messagesLoaded && messagesLoading.style.display !== 'none') {
+        messagesLoading.style.display = 'none';
+        messagesLoaded = true;
+      }
+    }, 3000);
+
+    console.info('Chat script loaded — clientId:', clientId);
+  </script>
+</body>
+</html>
