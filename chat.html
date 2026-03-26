@@ -16,32 +16,45 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      font-family: 'Noto Kufi Arabic', 'Almarai', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: #0c0c0e;
-      color: #ffffff;
-      line-height: 1.45;
-      overflow: hidden;
-      height: 100vh;
-    }
+body {
+  font-family: 'Noto Kufi Arabic', 'Almarai', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #0c0c0e;
+  color: #ffffff;
+  line-height: 1.45;
+  overflow: hidden;
 
-    .bg-static {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 30% 20%, #121214, #08080a);
-      z-index: -2;
-    }
+  /* fallback قديم */
+  min-height: 100vh;
 
-    .app-container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 2;
-    }
+  /* أجهزة حديثة */
+  min-height: 100dvh;
+}
+
+.bg-static {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 20%, #121214, #08080a);
+  z-index: -2;
+}
+
+.app-container {
+  /* fallback */
+  min-height: 100vh;
+
+  /* الحل الحقيقي */
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
 
     /* ========== TOPBAR ========== */
     .topbar {
@@ -285,47 +298,37 @@
       cursor: pointer;
     }
 
+    /* المثلث لرسائلك */
+    .my-message .bubble::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -10px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid #0069DA;
+      border-left: 0px solid transparent;
+    }
 
+    /* المثلث لرسائل الطرف الآخر */
+    .other-message .bubble::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -10px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid rgba(45, 45, 50, 0.55);
+      border-right: 0px solid transparent;
+    }
 
+    .my-message .bubble {
+      border-top-left-radius: 1px;
+    }
+    .other-message .bubble {
+      border-top-right-radius: 1px;
+    }
 
-/* 1. المثلث لرسائلك (يظهر في الزاوية اليمنى العلوية) */
-.my-message .bubble::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -10px; /* يخرج من جهة اليمين ليشير لصورتك */
-  width: 0;
-  height: 0;
-  border-top: 10px solid #0069DA; /* نفس لون فقاعتك بالضبط */
-  border-left: 0px solid transparent;
-}
-
-/* 2. المثلث لرسائل الطرف الآخر (يظهر في الزاوية اليسرى العلوية) */
-.other-message .bubble::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -10px; /* يخرج من جهة اليسار ليشير لصورة المرسل */
-  width: 0;
-  height: 0;
-  border-top: 10px solid rgba(45, 45, 50, 0.55); /* نفس لون الـ Glass الخاص بك */
-  border-right: 0px solid transparent;
-}
-
-/* تعديل بسيط للزوايا العلوية لتلتحم مع المثلثات */
-.my-message .bubble {
-  border-top-left-radius: 1px;
-}
-
-.other-message .bubble {
-  border-top-right-radius: 1px;
-}
-
-
-
-
-
-    /* MY MESSAGE */
     .my-message .bubble {
       background: #0069DA;
       backdrop-filter: none;
@@ -338,7 +341,6 @@
       background: #005fcb;
     }
 
-    /* OTHER MESSAGE */
     .other-message .bubble:active {
       transform: scale(0.98);
       background: rgba(60, 60, 70, 0.7);
@@ -625,7 +627,25 @@
       white-space: nowrap;
     }
 
-    @media (max-width: 680px) {
+    /* ---------- RESPONSIVE STYLES (ENHANCED) ---------- */
+    /* أجهزة صغيرة جداً (أقل من 480px) */
+    @media (max-width: 480px) {
+      .message { max-width: 92%; }
+      .topbar { padding: 4px 10px; height: 56px; }
+      .group-name { font-size: 0.9rem; }
+      .group-avatar { width: 32px; height: 32px; }
+      .bubble { padding: 5px 10px; font-size: 0.75rem; }
+      .typing-bubble { padding: 6px 12px; gap: 6px; }
+      .typing-dot { width: 5px; height: 5px; }
+      .send-button { width: 38px; height: 38px; font-size: 0.9rem; }
+      .message-input { padding: 10px 14px; font-size: 0.85rem; }
+      .input-wrapper { gap: 6px; }
+      .active-members-btn { padding: 4px 10px; font-size: 0.7rem; }
+      .active-members-btn i { font-size: 10px; }
+    }
+
+    /* هواتف (بين 481 و 680) */
+    @media (min-width: 481px) and (max-width: 680px) {
       .message { max-width: 88%; }
       .topbar { padding: 6px 12px; height: 60px; }
       .group-name { font-size: 0.99rem; }
@@ -636,6 +656,28 @@
       .send-button { width: 40px; height: 40px; font-size: 1rem; }
     }
 
+    /* أجهزة لوحية (بين 681 و 1024) */
+    @media (min-width: 681px) and (max-width: 1024px) {
+      .app-container { max-width: 100%; }
+      .message { max-width: 75%; }
+      .topbar { padding: 10px 20px; height: 68px; }
+      .group-name { font-size: 1.1rem; }
+      .bubble { padding: 8px 14px; font-size: 0.85rem; }
+      .send-button { width: 46px; height: 46px; font-size: 1.2rem; }
+    }
+
+    /* شاشات كبيرة (أكبر من 1024) */
+    @media (min-width: 1025px) {
+      .app-container { max-width: 1200px; margin: 0 auto; border-radius: 28px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+      .message { max-width: 65%; }
+      .topbar { padding: 12px 24px; height: 72px; }
+      .group-name { font-size: 1.2rem; }
+      .bubble { padding: 8px 16px; font-size: 0.9rem; }
+      .send-button { width: 48px; height: 48px; font-size: 1.2rem; }
+      .message-input { padding: 12px 18px; font-size: 1rem; }
+    }
+
+    /* تأثير النقر المزدوج */
     .bubble.double-tap-effect {
       animation: doubleTapShrink 0.2s ease-out;
     }
@@ -712,7 +754,7 @@
 <div class="alert" id="alertMessage">تم حذف الرسالة</div>
 
 <script type="module">
-  // ---------- ORIGINAL FIREBASE CONFIG & CHAT LOGIC ----------
+  // ---------- ORIGINAL FIREBASE CONFIG & CHAT LOGIC (unchanged) ----------
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
     getDatabase, ref, push, onChildAdded, onChildRemoved,
@@ -807,12 +849,11 @@
   let currentMessageToDelete = null;
   let replyingToMessage = null;
 
-  // ---------- TYPING INDICATOR IMPLEMENTATION (WhatsApp 2026 style) ----------
+  // ---------- TYPING INDICATOR IMPLEMENTATION ----------
   const typingStatusRef = ref(db, `rooms/${roomId}/typing`);
   let isAnyOtherTyping = false;
   let typingTimeoutId = null;
 
-  // Function to update own typing status in Firebase
   function updateMyTyping(isTyping) {
     const myTypingRef = ref(db, `rooms/${roomId}/typing/${clientId}`);
     if (isTyping) {
@@ -827,24 +868,20 @@
     }
   }
 
-  // Stop typing (clear timeout and remove from db)
   function stopTypingImmediately() {
     if (typingTimeoutId) clearTimeout(typingTimeoutId);
     updateMyTyping(false);
     typingTimeoutId = null;
   }
 
-  // Called when user is typing (input event)
   function handleUserTyping() {
     if (typingTimeoutId) clearTimeout(typingTimeoutId);
     updateMyTyping(true);
-    // After 2 seconds of inactivity, stop typing
     typingTimeoutId = setTimeout(() => {
       stopTypingImmediately();
     }, 2000);
   }
 
-  // Refresh typing indicator in UI (adds/removes bubble)
   function refreshTypingIndicator() {
     if (!messagesEl) return;
     const existingIndicator = messagesEl.querySelector('.typing-indicator-li');
@@ -863,7 +900,6 @@
       }
       li.appendChild(bubbleDiv);
       messagesEl.appendChild(li);
-      // auto-scroll to show the typing indicator if near bottom
       const container = messagesContainer;
       const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
       if (isNearBottom) {
@@ -872,7 +908,6 @@
     }
   }
 
-  // Listen to typing status from all users in the room
   onValue(typingStatusRef, (snapshot) => {
     const data = snapshot.val();
     let otherTyping = false;
@@ -891,7 +926,6 @@
     }
   });
 
-  // Add input event listeners for typing detection
   input.addEventListener('input', () => {
     if (localStorage.getItem('chatName')) {
       handleUserTyping();
@@ -905,12 +939,7 @@
   input.addEventListener('blur', () => {
     stopTypingImmediately();
   });
-  // When sending a message, stop typing immediately
-  const originalFormSubmit = form.addEventListener('submit', () => {
-    stopTypingImmediately();
-  });
-  // Also cancel typing when name overlay is set, but we'll just keep as is
-  // Clean up on page unload
+
   window.addEventListener('beforeunload', () => {
     if (clientId) {
       const myTypingRef = ref(db, `rooms/${roomId}/typing/${clientId}`);
@@ -918,7 +947,7 @@
     }
   });
 
-  // ---------- ORIGINAL HELPER FUNCTIONS (unchanged except renderAllMessages extended) ----------
+  // ---------- ORIGINAL HELPER FUNCTIONS ----------
   function convertToEnglishNumbers(text) {
     if (!text) return text;
     const arabic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
@@ -1135,7 +1164,6 @@
       const msgEl = createMessageElement(msg, msg.key);
       messagesEl.appendChild(msgEl);
     }
-    // Re-add typing indicator after render
     refreshTypingIndicator();
     messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
   }
@@ -1186,9 +1214,9 @@
   });
   confirmDeleteNo.addEventListener('click', () => { deleteConfirmModal.style.display = 'none'; currentMessageToDelete = null; });
 
-  const activeUsername = "";
-  const activeName = "";
-  const activeAvatar = "";
+  const activeUsername = "kppb2dlno5";
+  const activeName = "علي الفهد";
+  const activeAvatar = "https://i.postimg.cc/VktNdf6d/20250919-232834.jpg";
   function updateActivity() { update(ref(activeDB, 'activeUsersTest/' + encodeURIComponent(activeUsername)), { name: activeName, avatar: activeAvatar, lastActive: Date.now() }).catch(err => console.warn('active update err', err)); }
   updateActivity(); setInterval(updateActivity, 10000);
   setTimeout(() => { setupSwipeToReply(); }, 700);
