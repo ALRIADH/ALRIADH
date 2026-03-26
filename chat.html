@@ -16,48 +16,41 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-body {
-  font-family: 'Noto Kufi Arabic', 'Almarai', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: #0c0c0e;
-  color: #ffffff;
-  line-height: 1.45;
-  overflow: hidden;
+    body {
+      font-family: 'Noto Kufi Arabic', 'Almarai', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #0c0c0e;
+      color: #ffffff;
+      line-height: 1.45;
+      overflow: hidden;
+      height: 100vh;
+    }
 
-  /* fallback قديم */
-  min-height: 100vh;
+    .bg-static {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, #121214, #08080a);
+      z-index: -2;
+    }
 
-  /* أجهزة حديثة */
-  min-height: 100dvh;
-}
-
-.bg-static {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 30% 20%, #121214, #08080a);
-  z-index: -2;
-}
-
-.app-container {
-  /* fallback */
-  min-height: 100vh;
-
-  /* الحل الحقيقي */
-  min-height: 100dvh;
-
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 2;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
+    .app-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
     /* ========== TOPBAR ========== */
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       background: rgba(20, 20, 25, 0.7);
       backdrop-filter: blur(25px) saturate(180%);
       -webkit-backdrop-filter: blur(25px);
@@ -146,6 +139,7 @@ body {
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      min-height: 0; /* يمنع تجاوز المحتوى */
     }
 
     .messages-container {
@@ -153,6 +147,7 @@ body {
       overflow-y: auto;
       padding: 16px 14px 10px;
       scroll-behavior: smooth;
+      min-height: 0; /* أساسي لعمل flex */
     }
 
     .messages-container::-webkit-scrollbar {
@@ -360,7 +355,7 @@ body {
 
     /* reply container inside bubble */
     .reply-container {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.20);
       border-right: 2px solid #0069DA;
       border-radius: 14px;
       padding: 5px 10px;
@@ -388,13 +383,33 @@ body {
     }
 
     /* ---------- INPUT AREA ---------- */
-    .message-form {
-      background: rgba(20, 20, 25, 0.75);
-      backdrop-filter: blur(28px);
-      border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 16px 14px;
-      flex-shrink: 0;
-    }
+.message-form {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+  padding: 10px 16px 14px;
+  flex-shrink: 0;
+}
+.message-form::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(12,12,14,0.95) 0%,
+    rgba(12,12,14,0.75) 35%,
+    rgba(12,12,14,0.4) 65%,
+    rgba(12,12,14,0) 100%
+  );
+  z-index: -1;
+}
 
     .reply-preview {
       background: rgba(0, 122, 255, 0.12);
@@ -628,7 +643,6 @@ body {
     }
 
     /* ---------- RESPONSIVE STYLES (ENHANCED) ---------- */
-    /* أجهزة صغيرة جداً (أقل من 480px) */
     @media (max-width: 480px) {
       .message { max-width: 92%; }
       .topbar { padding: 4px 10px; height: 56px; }
@@ -644,7 +658,6 @@ body {
       .active-members-btn i { font-size: 10px; }
     }
 
-    /* هواتف (بين 481 و 680) */
     @media (min-width: 481px) and (max-width: 680px) {
       .message { max-width: 88%; }
       .topbar { padding: 6px 12px; height: 60px; }
@@ -656,7 +669,6 @@ body {
       .send-button { width: 40px; height: 40px; font-size: 1rem; }
     }
 
-    /* أجهزة لوحية (بين 681 و 1024) */
     @media (min-width: 681px) and (max-width: 1024px) {
       .app-container { max-width: 100%; }
       .message { max-width: 75%; }
@@ -666,18 +678,15 @@ body {
       .send-button { width: 46px; height: 46px; font-size: 1.2rem; }
     }
 
-    /* شاشات كبيرة (أكبر من 1024) */
     @media (min-width: 1025px) {
       .app-container { max-width: 1200px; margin: 0 auto; border-radius: 28px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
       .message { max-width: 65%; }
       .topbar { padding: 12px 24px; height: 72px; }
-      .group-name { font-size: 1.2rem; }
       .bubble { padding: 8px 16px; font-size: 0.9rem; }
       .send-button { width: 48px; height: 48px; font-size: 1.2rem; }
       .message-input { padding: 12px 18px; font-size: 1rem; }
     }
 
-    /* تأثير النقر المزدوج */
     .bubble.double-tap-effect {
       animation: doubleTapShrink 0.2s ease-out;
     }
@@ -689,7 +698,6 @@ body {
   </style>
 </head>
 <body>
-
 <div class="bg-static"></div>
 
 <div class="app-container">
@@ -1214,9 +1222,9 @@ body {
   });
   confirmDeleteNo.addEventListener('click', () => { deleteConfirmModal.style.display = 'none'; currentMessageToDelete = null; });
 
-  const activeUsername = "kppb2dlno5";
-  const activeName = "علي الفهد";
-  const activeAvatar = "https://i.postimg.cc/VktNdf6d/20250919-232834.jpg";
+  const activeUsername = "";
+  const activeName = "";
+  const activeAvatar = "";
   function updateActivity() { update(ref(activeDB, 'activeUsersTest/' + encodeURIComponent(activeUsername)), { name: activeName, avatar: activeAvatar, lastActive: Date.now() }).catch(err => console.warn('active update err', err)); }
   updateActivity(); setInterval(updateActivity, 10000);
   setTimeout(() => { setupSwipeToReply(); }, 700);
