@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>تسجيل الدخول · دوّامة النقاط الفخمة</title>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- أيقونات وخطوط -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== الأساسيات – أسود وأبيض بدون توهج ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } 
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: 'Segoe UI', 'Tahoma', sans-serif;
+            color: #ffffff;
+        } 
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        } 
+
+        /* ========== بطاقة تسجيل الدخول – زجاجية أنيقة ========== */
+        .login-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            padding: 20px;
+        } 
+
+        .login-card {
+            pointer-events: auto;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 48px;
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.6);
+            transition: border 0.2s ease;
+            color: #fff;
+        } 
+
+        .login-card:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+        } 
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        } 
+
+..logo-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.95;
+}
+.logo-icon img {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+} 
+
+        .login-header h2 {
+            font-size: 2rem;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        } 
+
+        .login-header p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            font-weight: 300;
+        } 
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        } 
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #cccccc;
+        } 
+
+        .input-field {
+            width: 100%;
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.25s;
+            font-family: inherit;
+        } 
+
+        .input-field:focus {
+            border-color: #ffffff;
+            background: rgba(30, 30, 30, 0.8);
+        } 
+
+        .input-field::placeholder {
+            color: #7a7a7a;
+            font-weight: 300;
+        } 
+
+        .password-wrapper {
+            position: relative;
+        } 
+
+        .toggle-password {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        } 
+
+        .toggle-password:hover {
+            color: #fff;
+        } 
+
+        .login-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0 30px;
+            font-size: 0.9rem;
+        } 
+
+        .forgot-link {
+            color: #dddddd;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(255,255,255,0.3);
+            padding-bottom: 2px;
+            transition: color 0.2s;
+        } 
+
+        .forgot-link:hover {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+        } 
+
+.login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #ffffff 0%, #e6e6e6 50%, #cfcfcf 100%);
+    color: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 60px;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+    box-shadow: 
+        0 10px 25px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+} 
+
+        .login-btn:hover {
+            background: transparent;
+            color: #ffffff;
+            border-color: #ffffff;
+        } 
+
+        .signup-prompt {
+            text-align: center;
+            margin-top: 28px;
+            color: #aaaaaa;
+            font-size: 0.95rem;
+        } 
+
+        .signup-prompt a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            padding-bottom: 2px;
+            margin-right: 6px;
+        } 
+
+        .footer-note {
+            margin-top: 24px;
+            text-align: center;
+            color: #777;
+            font-size: 0.75rem;
+        } 
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 1rem;
+        } 
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+                border-radius: 36px;
+            }
+        }
+    </style>
+</head>
+<body> 
+
+    <div id="canvas-container"></div> 
+
+    <!-- واجهة تسجيل الدخول -->
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-icon">
+           <img src="https://i.postimg.cc/MThJfg32/20260412-205929.png" alt="logo">
+                </div>
+                <p>Log in to continue</p>
+            </div> 
+
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="input-group">
+                    <label>User ID</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="text" class="input-field" id="username" placeholder="example@domain.com" autocomplete="off" required>
+                    </div>
+                </div> 
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="input-field" id="password" placeholder="••••••••" required>
+                        <i class="toggle-password fas fa-eye" id="togglePassword"></i>
+                    </div>
+                </div> 
+
+                <div class="login-options">
+                    <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+                </div> 
+
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-arrow-left"></i> Log in
+                </button> 
+
+            </form>
+        </div>
+    </div> 
+
+    <script>
+        (function(){
+            "use strict"; 
+
+            // ---------- إعدادات Three.js: نقاط دائرية دوّامة (Vortex) فخمة ----------
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000); // أسود نقي 
+
+            const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 6, 28);
+            camera.lookAt(0, 0, 0); 
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement); 
+
+            // ---------- نسيج دائري ناعم (نقطة بيضاء) ----------
+            function createSoftCircleTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 64;
+                canvas.height = 64;
+                const ctx = canvas.getContext('2d');
+                
+                const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+                gradient.addColorStop(0, 'rgba(255,255,255,1)');
+                gradient.addColorStop(0.5, 'rgba(240,240,240,0.95)');
+                gradient.addColorStop(0.8, 'rgba(200,200,200,0.6)');
+                gradient.addColorStop(1, 'rgba(180,180,180,0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 64, 64);
+                
+                return new THREE.CanvasTexture(canvas);
+            } 
+
+            const circleTexture = createSoftCircleTexture(); 
+
+            // ---------- إنشاء نقاط دوّامة (عدد كبير لإظهار التفاصيل) ----------
+            const particleCount = 35000; // كثافة عالية لمظهر فخم
+            const geometry = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            // تخزين البيانات الأصلية لكل نقطة (للحركة الدوّامية)
+            const initialRadii = new Float32Array(particleCount);
+            const initialAngles = new Float32Array(particleCount);
+            const initialHeights = new Float32Array(particleCount);
+            const spiralFactors = new Float32Array(particleCount); // للتحكم في سرعة الدوران حسب نصف القطر
+            
+            const maxRadius = 16.0;
+            const heightRange = 10.0;
+            
+            for (let i = 0; i < particleCount; i++) {
+                // توزيع النقاط بشكل حلزوني / قرصي مع تنوع في الارتفاع
+                // استخدام توزيع غير منتظم ليعطي مظهراً طبيعياً
+                const r = Math.pow(Math.random(), 1.5) * maxRadius; // كثافة أعلى نحو المركز
+                const angle = Math.random() * Math.PI * 2;
+                
+                // ارتفاع يعتمد على نصف القطر: نقاط أبعد تكون أعلى أو أخفض قليلاً (تأثير قمعي)
+                const h = (Math.random() - 0.5) * heightRange * (1 - r / maxRadius * 0.7) 
+                            + Math.sin(r * 1.5) * 1.2; // تموج بسيط لإثراء الشكل
+                
+                const x = Math.cos(angle) * r;
+                const z = Math.sin(angle) * r;
+                
+                positions[i*3] = x;
+                positions[i*3+1] = h;
+                positions[i*3+2] = z;
+                
+                // تخزين القيم الأولية
+                initialRadii[i] = r;
+                initialAngles[i] = angle;
+                initialHeights[i] = h;
+                
+                // عامل السرعة: النقاط الداخلية تدور أسرع (محاكاة دوران تفاضلي)
+                spiralFactors[i] = 0.8 + 1.5 * Math.exp(-r * 0.25);
+                
+// مزج بين الأبيض و #00aaff
+const brightness = 0.7 + 0.3 * Math.sin(r * 1.2) * Math.cos(h * 0.8); 
+
+// لون سماوي ملكي
+const cyan = {
+    r: 0.0,
+    g: 0.67,
+    b: 1.0
+}; 
+
+// مزج (white -> cyan)
+const mix = 0.5 + 0.5 * Math.sin(r * 0.8); 
+
+colors[i*3]     = brightness * (1 * (1 - mix) + cyan.r * mix);
+colors[i*3 + 1] = brightness * (1 * (1 - mix) + cyan.g * mix);
+colors[i*3 + 2] = brightness * (1 * (1 - mix) + cyan.b * mix);
+}
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.16,
+                map: circleTexture,
+                vertexColors: true,
+                transparent: true,
+                alphaTest: 0.05,
+                depthWrite: true,
+                blending: THREE.NormalBlending,
+                sizeAttenuation: true
+            });
+            
+            const vortexPoints = new THREE.Points(geometry, material);
+            scene.add(vortexPoints); 
+
+            // ---------- طبقة نقاط خلفية إضافية لتعزيز العمق (دوّامة ثانية) ----------
+            const bgCount = 8000;
+            const bgGeo = new THREE.BufferGeometry();
+            const bgPos = new Float32Array(bgCount * 3);
+            const bgInitRad = new Float32Array(bgCount);
+            const bgInitAng = new Float32Array(bgCount);
+            const bgSpeed = new Float32Array(bgCount);
+            
+            for (let i = 0; i < bgCount; i++) {
+                const r = 18 + Math.random() * 15;
+                const angle = Math.random() * Math.PI * 2;
+                const h = (Math.random() - 0.5) * 12;
+                
+                bgPos[i*3] = Math.cos(angle) * r;
+                bgPos[i*3+1] = h;
+                bgPos[i*3+2] = Math.sin(angle) * r;
+                
+                bgInitRad[i] = r;
+                bgInitAng[i] = angle;
+                bgSpeed[i] = 0.3 + Math.random() * 0.5;
+            }
+            bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+            const bgMat = new THREE.PointsMaterial({
+                size: 0.25,
+                color: 0xaaaaaa,
+                map: circleTexture,
+                transparent: true,
+                opacity: 0.2,
+                blending: THREE.NormalBlending,
+                sizeAttenuation: true
+            });
+            const bgPoints = new THREE.Points(bgGeo, bgMat);
+            scene.add(bgPoints); 
+
+            // ---------- متغيرات التحريك والتفاعل ----------
+            const clock = new THREE.Clock();
+            
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetRotY = 0;
+            let targetRotX = 0;
+            
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+                targetRotY = mouseX * 0.15;
+                targetRotX = mouseY * 0.08;
+            }); 
+
+            // ---------- حلقة التحريك: دوّامة فخمة (Vortex) ----------
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                const delta = clock.getDelta();
+                const elapsedTime = performance.now() * 0.001; // seconds
+                
+                // 1. تحريك النقاط الرئيسية في دوّامة
+                const positionAttr = geometry.attributes.position;
+                const posArray = positionAttr.array;
+                
+                // سرعة الدوران الأساسية
+                const baseSpeed = 0.6;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const r = initialRadii[i];
+                    const angle0 = initialAngles[i];
+                    const h0 = initialHeights[i];
+                    
+                    // الزاوية الجديدة = الزاوية الأصلية + الوقت × السرعة (تعتمد على r)
+                    // النقاط الأقرب للمركز تدور أسرع (تأثير تفاضلي)
+                    const speedFactor = spiralFactors[i];
+                    const newAngle = angle0 + elapsedTime * baseSpeed * speedFactor * 0.5;
+                    
+                    // إضافة تأثير تموج بسيط في الارتفاع مع الزمن (لإضفاء حيوية دون إفساد الدوّامة)
+                    const waveY = Math.sin(r * 2.0 - elapsedTime * 1.8) * 0.4 
+                                + Math.cos(newAngle * 2.5 + elapsedTime) * 0.3;
+                    
+                    // حساب الإحداثيات الجديدة
+                    const x = Math.cos(newAngle) * r;
+                    const z = Math.sin(newAngle) * r;
+                    const y = h0 + waveY;
+                    
+                    posArray[i*3] = x;
+                    posArray[i*3+1] = y;
+                    posArray[i*3+2] = z;
+                }
+                positionAttr.needsUpdate = true;
+                
+                // 2. تحريك النقاط الخلفية (دوّامة أبطأ)
+                const bgPosAttr = bgGeo.attributes.position;
+                const bgArray = bgPosAttr.array;
+                for (let i = 0; i < bgCount; i++) {
+                    const r = bgInitRad[i];
+                    const angle0 = bgInitAng[i];
+                    const speed = bgSpeed[i];
+                    const newAngle = angle0 + elapsedTime * 0.25 * speed;
+                    
+                    bgArray[i*3] = Math.cos(newAngle) * r;
+                    bgArray[i*3+2] = Math.sin(newAngle) * r;
+                    // ارتفاع متغير قليلاً
+                    bgArray[i*3+1] = (Math.sin(r * 0.8 + elapsedTime * 0.5) * 1.5);
+                }
+                bgPosAttr.needsUpdate = true;
+                
+                // 3. استجابة لطيفة للماوس (تدوير المشهد بالكامل)
+                vortexPoints.rotation.y += (targetRotY - vortexPoints.rotation.y) * 0.01;
+                vortexPoints.rotation.x += (targetRotX - vortexPoints.rotation.x) * 0.01;
+                bgPoints.rotation.y = vortexPoints.rotation.y * 0.6;
+                bgPoints.rotation.x = vortexPoints.rotation.x * 0.4;
+                
+                // 4. حركة كاميرا بطيئة جداً (تأثير سينمائي)
+                camera.position.x += (mouseX * 2.0 - camera.position.x) * 0.003;
+                camera.position.y = 6.5 + Math.sin(elapsedTime * 0.1) * 0.8;
+                camera.lookAt(0, 0.5, 0);
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate(); 
+
+            // ---------- تغيير حجم النافذة ----------
+            window.addEventListener('resize', onWindowResize, false);
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            } 
+
+            // ---------- وظائف واجهة تسجيل الدخول ----------
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            }); 
+
+            window.handleLogin = function() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    alert('الرجاء إدخال اسم المستخدم وكلمة المرور');
+                    return;
+                }
+                
+                alert(`🌀 مرحباً ${username || 'مستخدم'}! دوّامة النقاط الفخمة ترحب بك.`);
+            }; 
+
+            console.log('🌀 دوّامة نقاط فخمة · دوران تفاضلي · بدون توهج 🌀');
+        })();
+    </script>
+</body>
+</html>
